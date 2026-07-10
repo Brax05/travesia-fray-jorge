@@ -55,20 +55,25 @@ namespace TravesiaACasa.Menu.Editor
             fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
             fitter.aspectRatio = bgSprite.rect.width / bgSprite.rect.height;
 
+            GameObject menuContent = new GameObject("MenuContent", typeof(RectTransform));
+            menuContent.transform.SetParent(canvasT, false);
+            StretchFull(menuContent.GetComponent<RectTransform>());
+            Transform menuContentT = menuContent.transform;
+
             // Título (ancla y pivote arriba-centro, para que el offset baje
             // el título desde el borde superior sin que se salga de cuadro)
             Sprite tituloSprite = LoadSprite($"{ArtRoot}/menu/titulo .png");
-            Image titulo = CreateImage(canvasT, "Titulo", tituloSprite);
+            Image titulo = CreateImage(menuContentT, "Titulo", tituloSprite);
             PlaceUI(titulo.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -80), SizeFromSprite(tituloSprite, 780f));
 
             // Botón Jugar
             Sprite jugarSprite = LoadSprite($"{ArtRoot}/menu/jugar.png");
-            Button jugarBtn = CreateButton(canvasT, "BotonJugar", jugarSprite);
+            Button jugarBtn = CreateButton(menuContentT, "BotonJugar", jugarSprite);
             PlaceUI(jugarBtn.GetComponent<RectTransform>(), new Vector2(0.74f, 0.5f), Center, new Vector2(0, 60), SizeFromSprite(jugarSprite, 340f));
 
             // Botón Configuración
             Sprite configBtnSprite = LoadSprite($"{ArtRoot}/menu/configuración.png");
-            Button configBtn = CreateButton(canvasT, "BotonConfiguracion", configBtnSprite);
+            Button configBtn = CreateButton(menuContentT, "BotonConfiguracion", configBtnSprite);
             PlaceUI(configBtn.GetComponent<RectTransform>(), new Vector2(0.74f, 0.5f), Center, new Vector2(0, -60), SizeFromSprite(configBtnSprite, 340f));
 
             // Panel de Configuración (arranca oculto)
@@ -82,6 +87,7 @@ namespace TravesiaACasa.Menu.Editor
             GameObject controllerGO = new GameObject("MenuController");
             MainMenuController controller = controllerGO.AddComponent<MainMenuController>();
             SetPrivateField(controller, "settingsPanelRoot", panelRoot);
+            SetPrivateField(controller, "menuContentRoot", menuContent);
 
             UnityEventTools.AddPersistentListener(jugarBtn.onClick, controller.OnPlayClicked);
             UnityEventTools.AddPersistentListener(configBtn.onClick, controller.OnOpenSettingsClicked);

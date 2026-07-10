@@ -4,12 +4,9 @@ using UnityEngine.UI;
 namespace TravesiaACasa.Menu
 {
     /// <summary>
-    /// Conecta los 4 sliders y los 2 botones-interruptor del panel de
-    /// Configuración (assets juego aves/configuración/) con SettingsManager.
-    /// Los interruptores no usan el componente Toggle de Unity: son un
-    /// Button que alterna manualmente entre el sprite "boton marron"
-    /// (apagado) y "boton naranjo" (encendido), que es el par de assets
-    /// que entregó la diseñadora para este control.
+    /// Conecta los controles del panel de configuracion con SettingsManager.
+    /// No modifica posiciones ni tamanos en runtime para que el panel pueda
+    /// editarse manualmente desde la escena de Unity.
     /// </summary>
     public class SettingsPanelController : MonoBehaviour
     {
@@ -26,8 +23,8 @@ namespace TravesiaACasa.Menu
         [SerializeField] private Image vibracionImage;
 
         [Header("Sprites de interruptor")]
-        [SerializeField] private Sprite toggleOffSprite; // boton marron
-        [SerializeField] private Sprite toggleOnSprite;  // boton naranjo
+        [SerializeField] private Sprite toggleOffSprite;
+        [SerializeField] private Sprite toggleOnSprite;
 
         private SettingsManager settings;
 
