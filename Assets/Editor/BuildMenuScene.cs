@@ -14,8 +14,8 @@ using static TravesiaACasa.Menu.Editor.SettingsPanelBuildUtils;
 namespace TravesiaACasa.Menu.Editor
 {
     /// <summary>
-    /// Genera Assets/Scenes/MainMenu.unity a partir del arte entregado en
-    /// assets juego aves/menu/ y assets juego aves/configuración/:
+    /// Genera Assets/Escenas/MenuPrincipal.unity a partir del arte entregado en
+    /// Arte/menu/ y Arte/configuracion/:
     /// título + botón Jugar + botón Configuración, y el panel de
     /// Configuración (construido por SettingsPanelBuildUtils, compartido
     /// con la escena de juego) + overlay de Brillo aplicado en vivo.
@@ -24,13 +24,13 @@ namespace TravesiaACasa.Menu.Editor
     /// </summary>
     public static class BuildMenuScene
     {
-        private const string ArtRoot = "Assets/assets juego/assets juego aves";
-        private const string ScenePath = "Assets/Scenes/MainMenu.unity";
+        private const string ArtRoot = "Assets/Arte";
+        private const string ScenePath = "Assets/Escenas/MenuPrincipal.unity";
 
         [MenuItem("Game/Build Menu Scene")]
         public static void Build()
         {
-            Directory.CreateDirectory("Assets/Scenes");
+            Directory.CreateDirectory("Assets/Escenas");
             EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
 
             new GameObject("EventSystem", typeof(EventSystem), typeof(InputSystemUIInputModule));
@@ -45,8 +45,8 @@ namespace TravesiaACasa.Menu.Editor
             scaler.matchWidthOrHeight = 0.5f;
             Transform canvasT = canvasGO.transform;
 
-            // Fondo (fondo inicio + ave, ver menu/Fondo menú.png)
-            Sprite bgSprite = LoadSprite($"{ArtRoot}/menu/Fondo menú.png");
+            // Fondo (fondo inicio + ave, ver menu/fondo_menu.png)
+            Sprite bgSprite = LoadSprite($"{ArtRoot}/menu/fondo_menu.png");
             Image bg = CreateImage(canvasT, "Fondo", bgSprite);
             bg.rectTransform.anchorMin = bg.rectTransform.anchorMax = Center;
             bg.rectTransform.pivot = Center;
@@ -62,7 +62,7 @@ namespace TravesiaACasa.Menu.Editor
 
             // Título (ancla y pivote arriba-centro, para que el offset baje
             // el título desde el borde superior sin que se salga de cuadro)
-            Sprite tituloSprite = LoadSprite($"{ArtRoot}/menu/titulo .png");
+            Sprite tituloSprite = LoadSprite($"{ArtRoot}/menu/titulo.png");
             Image titulo = CreateImage(menuContentT, "Titulo", tituloSprite);
             PlaceUI(titulo.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0, -80), SizeFromSprite(tituloSprite, 780f));
 
@@ -72,7 +72,7 @@ namespace TravesiaACasa.Menu.Editor
             PlaceUI(jugarBtn.GetComponent<RectTransform>(), new Vector2(0.74f, 0.5f), Center, new Vector2(0, 60), SizeFromSprite(jugarSprite, 340f));
 
             // Botón Configuración
-            Sprite configBtnSprite = LoadSprite($"{ArtRoot}/menu/configuración.png");
+            Sprite configBtnSprite = LoadSprite($"{ArtRoot}/menu/configuracion.png");
             Button configBtn = CreateButton(menuContentT, "BotonConfiguracion", configBtnSprite);
             PlaceUI(configBtn.GetComponent<RectTransform>(), new Vector2(0.74f, 0.5f), Center, new Vector2(0, -60), SizeFromSprite(configBtnSprite, 340f));
 

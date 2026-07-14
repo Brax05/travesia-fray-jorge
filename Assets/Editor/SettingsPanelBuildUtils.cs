@@ -12,7 +12,7 @@ namespace TravesiaACasa.Menu.Editor
     /// </summary>
     public static class SettingsPanelBuildUtils
     {
-        private const string ArtRoot = "Assets/assets juego/assets juego aves";
+        private const string ArtRoot = "Assets/Arte";
 
         private const float LeftLabelX = 0.15f;
         private const float LeftControlX = 0.34f;
@@ -24,13 +24,13 @@ namespace TravesiaACasa.Menu.Editor
         private const float SliderWidth = 340f;
         private const float SliderHandleWidth = 70f;
         private const float ToggleWidth = 120f;
-        private const string ConfigTitlePath = ArtRoot + "/configuraci\u00f3n/slider_separado/configfondo.png";
-        private const string SliderBarPath = ArtRoot + "/configuraci\u00f3n/slider_separado/nuevabarra.png";
-        private const string SliderRemainderBarPath = ArtRoot + "/configuraci\u00f3n/slider_separado/nuevabarra_cafe.png";
-        private const string LeafIconPath = ArtRoot + "/configuraci\u00f3n/slider_separado/ChatGPT Image 10 jul 2026, 11_09_23 (6).png";
-        private const string BirdIconPath = ArtRoot + "/configuraci\u00f3n/slider_separado/ChatGPT Image 10 jul 2026, 11_09_25 (8).png";
-        private const string PinkFlowerIconPath = ArtRoot + "/configuraci\u00f3n/slider_separado/0abd847e-7b1e-46e9-b7d2-d14733a6f4a1.png";
-        private const string YellowFlowerIconPath = ArtRoot + "/configuraci\u00f3n/slider_separado/ChatGPT Image 10 jul 2026, 11_09_23 (4).png";
+        private const string ConfigTitlePath = ArtRoot + "/configuracion/slider_separado/configfondo.png";
+        private const string SliderBarPath = ArtRoot + "/configuracion/slider_separado/nuevabarra.png";
+        private const string SliderRemainderBarPath = ArtRoot + "/configuracion/slider_separado/nuevabarra_cafe.png";
+        private const string LeafIconPath = ArtRoot + "/configuracion/slider_separado/hoja.png";
+        private const string BirdIconPath = ArtRoot + "/configuracion/slider_separado/ave_icono.png";
+        private const string PinkFlowerIconPath = ArtRoot + "/configuracion/slider_separado/flor_rosada.png";
+        private const string YellowFlowerIconPath = ArtRoot + "/configuracion/slider_separado/flor_amarilla.png";
 
         private static readonly Vector2 SonidoTitleAnchor = new Vector2(LeftLabelX, 0.84f);
         private static readonly Vector2 OpcionesTitleAnchor = new Vector2(RightLabelX, 0.84f);
@@ -94,8 +94,8 @@ namespace TravesiaACasa.Menu.Editor
             Slider cinematica = CreateSlider(panelT, "SliderCinematica", PinkFlowerIconPath, CinematicaAnchor);
             Slider brillo = CreateSlider(panelT, "SliderBrillo", YellowFlowerIconPath, BrilloAnchor);
 
-            Sprite offSprite = LoadSprite($"{ArtRoot}/configuraci\u00f3n/boton marron.png");
-            Sprite onSprite = LoadSprite($"{ArtRoot}/configuraci\u00f3n/boton naranjo.png");
+            Sprite offSprite = LoadSprite($"{ArtRoot}/configuracion/boton_marron.png");
+            Sprite onSprite = LoadSprite($"{ArtRoot}/configuracion/boton_naranjo.png");
             Button daltonicoBtn = CreateToggleButton(panelT, "ToggleModoDaltonico", offSprite, DaltonicoAnchor, out Image daltonicoImg);
             Button vibracionBtn = CreateToggleButton(panelT, "ToggleVibracion", offSprite, VibracionAnchor, out Image vibracionImg);
 

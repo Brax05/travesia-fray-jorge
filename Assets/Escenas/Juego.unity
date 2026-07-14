@@ -737,7 +737,7 @@ GameObject:
   - component: {fileID: 137498655}
   - component: {fileID: 137498660}
   m_Layer: 0
-  m_Name: Yal_Bird
+  m_Name: Jugador_Yal
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5005,7 +5005,7 @@ GameObject:
   - component: {fileID: 1299473327}
   - component: {fileID: 1299473326}
   m_Layer: 0
-  m_Name: nido_0
+  m_Name: Nido
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5080,11 +5080,11 @@ Transform:
   m_GameObject: {fileID: 1299473325}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.05, y: 8.63, z: 0}
+  m_LocalPosition: {x: -0.05, y: -1.37, z: 0}
   m_LocalScale: {x: 0.5, y: 0.53125, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1682077172}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1317531778
 GameObject:
@@ -7212,6 +7212,7 @@ Transform:
   m_Children:
   - {fileID: 1779595960}
   - {fileID: 1747805849}
+  - {fileID: 1299473327}
   m_Father: {fileID: 1043100612}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1693029253
@@ -9841,4 +9842,3 @@ SceneRoots:
   - {fileID: 954747686}
   - {fileID: 1095572860}
   - {fileID: 1264087415}
-  - {fileID: 1299473327}
