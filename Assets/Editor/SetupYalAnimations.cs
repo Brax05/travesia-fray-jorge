@@ -15,7 +15,7 @@ namespace TravesiaACasa.Rooms.Editor
     public static class SetupYalAnimations
     {
         private const string BaseFolder =
-            "Assets/assets juego/assets juego aves/juego/yal_animaciones";
+            "Assets/Arte/juego/yal_animaciones";
 
         [MenuItem("Game/Asignar animaciones del Yal")]
         public static void Assign()

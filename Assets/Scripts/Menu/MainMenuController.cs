@@ -4,13 +4,13 @@ using UnityEngine.SceneManagement;
 namespace TravesiaACasa.Menu
 {
     /// <summary>
-    /// Botones del menú principal (jugar.png / configuración.png del
-    /// boceto). "Jugar" carga la escena de juego por nombre para no
-    /// depender del orden en Build Settings.
+    /// Botones del menú principal (Arte/menu/jugar.png y
+    /// configuracion.png). "Jugar" carga la escena de juego por nombre
+    /// para no depender del orden en Build Settings.
     /// </summary>
     public class MainMenuController : MonoBehaviour
     {
-        [SerializeField] private string gameSceneName = "Game";
+        [SerializeField] private string gameSceneName = "Juego";
         [SerializeField] private GameObject settingsPanelRoot;
         [SerializeField] private GameObject menuContentRoot;
 

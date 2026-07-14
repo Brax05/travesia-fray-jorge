@@ -5,7 +5,7 @@ namespace TravesiaACasa.Menu
 {
     /// <summary>
     /// Conecta los 4 sliders y los 2 botones-interruptor del panel de
-    /// Configuración (assets juego aves/configuración/) con SettingsManager.
+    /// Configuración (Arte/configuracion/) con SettingsManager.
     /// Los interruptores no usan el componente Toggle de Unity: son un
     /// Button que alterna manualmente entre el sprite "boton marron"
     /// (apagado) y "boton naranjo" (encendido), que es el par de assets

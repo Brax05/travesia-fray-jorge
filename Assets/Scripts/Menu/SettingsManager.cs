@@ -5,7 +5,7 @@ namespace TravesiaACasa.Menu
 {
     /// <summary>
     /// Valores de la pantalla de Configuración (ver boceto en
-    /// assets juego aves/configuración/configuración.png: Sonido
+    /// Arte/configuracion/configuracion.png: Sonido
     /// [Ambiente/Personajes/Cinemática], Brillo, Modo daltónico,
     /// Vibración). Se guarda en PlayerPrefs igual que CollectibleManager.
     ///
