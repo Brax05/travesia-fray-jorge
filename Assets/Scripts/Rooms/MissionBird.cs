@@ -31,6 +31,16 @@ namespace TravesiaACasa.Rooms
         [Tooltip("Si está marcado, el ave arranca ya con una misión que ofrecer (globo visible).")]
         [SerializeField] private bool hasMissionOnStart = true;
 
+        [Header("Referencias HUD a ocultar")]
+        [Tooltip("Controles de movimiento en pantalla (D-pad).")]
+        [SerializeField] private GameObject dpad;
+
+        [Tooltip("Botón de interactuar del HUD.")]
+        [SerializeField] private GameObject interactButton;
+
+        [Tooltip("Botón de picotear del HUD.")]
+        [SerializeField] private GameObject peckButton;
+
         /// <summary>True mientras el ave tiene una misión pendiente para el jugador.</summary>
         public bool HasMission { get; private set; }
 
@@ -51,6 +61,11 @@ namespace TravesiaACasa.Rooms
 
             if (dialoguePanel != null) dialoguePanel.SetActive(false);
             SetMission(hasMissionOnStart);
+
+            // Búsqueda dinámica de controles táctiles en el HUD
+            if (dpad == null) dpad = GameObject.Find("Dpad");
+            if (interactButton == null) interactButton = GameObject.Find("InteractuarBtn");
+            if (peckButton == null) peckButton = GameObject.Find("PicotearBtn");
         }
 
         private void Update()
@@ -80,6 +95,10 @@ namespace TravesiaACasa.Rooms
 
             dialoguePanel.SetActive(true);
             if (dialogueBubble != null) dialogueBubble.SetActive(false);
+
+            if (dpad != null) dpad.SetActive(false);
+            if (interactButton != null) interactButton.SetActive(false);
+            if (peckButton != null) peckButton.SetActive(false);
             hud?.SetGameplayControlsVisible(false);
         }
 
@@ -89,6 +108,10 @@ namespace TravesiaACasa.Rooms
             // La misión sigue pendiente hasta que el sistema de misiones
             // llame a CompleteMission(): el globo vuelve a mostrarse.
             if (dialogueBubble != null) dialogueBubble.SetActive(HasMission);
+
+            if (dpad != null) dpad.SetActive(true);
+            if (interactButton != null) interactButton.SetActive(true);
+            if (peckButton != null) peckButton.SetActive(true);
             hud?.SetGameplayControlsVisible(true);
         }
 
