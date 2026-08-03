@@ -24,6 +24,13 @@ namespace TravesiaACasa.Rooms
         [Header("Referencias")]
         [SerializeField] private Transform player;
 
+        [Header("Entrada a la room destino")]
+        [Tooltip("Al entrar sin entryPoint explícito, el jugador se reubica dentro de este " +
+                 "rectángulo (medio ancho/alto) alrededor del centro de la room destino. Evita " +
+                 "que camine por el vacío entre fondos (las rooms están separadas ~15 unidades " +
+                 "en vertical pero el fondo mide ~8.8 de alto).")]
+        [SerializeField] private Vector2 entryClampHalfExtents = new Vector2(8.6f, 3.6f);
+
         public RoomNode CurrentNode { get; private set; }
 
         /// <summary>Se dispara cada vez que el jugador entra a una nueva room.</summary>
@@ -77,11 +84,24 @@ namespace TravesiaACasa.Rooms
             CurrentNode = target;
             NodeChanged?.Invoke(target);
 
-            if (entryPosition.HasValue && player != null)
+            if (player == null) return;
+
+            if (entryPosition.HasValue)
             {
                 Vector3 end = entryPosition.Value;
                 end.z = player.position.z;
                 player.position = end;
+            }
+            else
+            {
+                // Sin entryPoint: el jugador conserva su impulso, pero se
+                // recorta su posición al área visible de la room nueva para
+                // que no tenga que cruzar caminando el hueco entre fondos.
+                Vector3 clamped = player.position;
+                Vector2 center = target.testWorldPosition;
+                clamped.x = Mathf.Clamp(clamped.x, center.x - entryClampHalfExtents.x, center.x + entryClampHalfExtents.x);
+                clamped.y = Mathf.Clamp(clamped.y, center.y - entryClampHalfExtents.y, center.y + entryClampHalfExtents.y);
+                player.position = clamped;
             }
         }
     }

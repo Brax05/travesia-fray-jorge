@@ -24,7 +24,7 @@ namespace TravesiaACasa.Rooms
     [RequireComponent(typeof(SpriteRenderer))]
     public class BirdPlayerController : MonoBehaviour
     {
-        [SerializeField] private float moveSpeed = 4f;
+        [SerializeField] private float moveSpeed = 6f;
 
         private Rigidbody2D rb;
         private SpriteRenderer spriteRenderer;

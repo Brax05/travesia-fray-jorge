@@ -44,6 +44,9 @@ namespace TravesiaACasa.Rooms
         /// <summary>True mientras el ave tiene una misión pendiente para el jugador.</summary>
         public bool HasMission { get; private set; }
 
+        /// <summary>Se dispara cada vez que el jugador cierra el cuadro de diálogo.</summary>
+        public event System.Action DialogueClosed;
+
         /// <summary>True mientras el panel de conversación está abierto.</summary>
         public bool DialogueOpen => dialoguePanel != null && dialoguePanel.activeSelf;
 
@@ -136,6 +139,8 @@ namespace TravesiaACasa.Rooms
             if (interactButton != null) interactButton.SetActive(true);
             if (peckButton != null) peckButton.SetActive(true);
             hud?.SetGameplayControlsVisible(true);
+
+            DialogueClosed?.Invoke();
         }
 
         private bool PlayerInRange()
