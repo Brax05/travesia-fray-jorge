@@ -60,11 +60,17 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private Sprite copihueSprite;
         [SerializeField] private Sprite plumasSprite;
 
+        [Header("Materiales recolectables (MaterialPickup)")]
+        [Tooltip("Pickups desactivados repartidos por las rooms; se activan al aceptar la misión. " +
+                 "Los coloca la tool Game/Misión/Colocar materiales de la misión.")]
+        [SerializeField] private GameObject[] materialPickups;
+
         private MissionBird missionBird;
         private GameHudController hud;
         private Canvas hudCanvas;
         private GameObject missionPanel;
         private bool played;
+        private int pickupsRemaining;
 
         private void Start()
         {
@@ -83,6 +89,7 @@ namespace TravesiaACasa.Rooms
         {
             if (missionBird != null)
                 missionBird.DialogueClosed -= OnMissionBirdDialogueClosed;
+            MaterialPickup.Collected -= OnMaterialCollected;
         }
 
         private void OnMissionBirdDialogueClosed()
@@ -159,6 +166,27 @@ namespace TravesiaACasa.Rooms
                 missionBird.enabled = true;
             }
             StartCoroutine(BlinkMissionIndicator());
+
+            // Aparecen los materiales repartidos por las rooms.
+            pickupsRemaining = 0;
+            if (materialPickups != null)
+            {
+                foreach (GameObject pickup in materialPickups)
+                {
+                    if (pickup == null) continue;
+                    pickup.SetActive(true);
+                    pickupsRemaining++;
+                }
+            }
+            if (pickupsRemaining > 0)
+                MaterialPickup.Collected += OnMaterialCollected;
+        }
+
+        private void OnMaterialCollected(MaterialPickup pickup)
+        {
+            if (--pickupsRemaining > 0) return;
+            MaterialPickup.Collected -= OnMaterialCollected;
+            PickupToast.Show("¡Ya tienes todos los materiales! Vuelve donde el Carpintero.");
         }
 
         private GameObject OpenDialogueAsAveNegra(Sprite aveSprite,
