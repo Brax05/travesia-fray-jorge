@@ -61,4 +61,7 @@ archivos-modificados/
 
 # Coordinación local entre agentes (no versionar)
 /TAREAS.md
+/AGENTS.md
+/CLAUDE.md
+/HANDOFF.md
 /[Aa]ssets/_Recovery.meta
