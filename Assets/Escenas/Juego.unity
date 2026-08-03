@@ -1977,6 +1977,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
   m_BlendShapeWeights: []
+--- !u!1 &880200010 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2744040135208898127, guid: 60ced1ec05122339889a19a843b90afd, type: 3}
+  m_PrefabInstance: {fileID: 6171760938407719620}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &880300001
 GameObject:
   m_ObjectHideFlags: 0
@@ -2178,17 +2183,19 @@ MonoBehaviour:
   ideaBubble: {fileID: 880300004}
   walkTargetLocalPos: {x: 1.1, y: -0.4}
   walkSpeed: 2.2
+  speakerName: Carpinterito
+  avatarSprite: {fileID: 1886014540496407190, guid: cb7a8c41510d75497969458cb9197462, type: 3}
+  blinkDurationSeconds: 10
+  dialogueLine: "\xA1Piip! \xA1Se me ocurri\xF3 una idea para que vuelvas a casa!
+    Pero vamos a necesitar materiales... \xA1mira la lista!"
   letreroFondoSprite: {fileID: -3441638125993238477, guid: f3f3bf5b116ec8b148ec84043d207231, type: 3}
   tituloMisionSprite: {fileID: -7830396651265450793, guid: 7e267da93eab83802b06de3a9cc6663a, type: 3}
+  missionText: "Recolecta los materiales que\nCarpintero te pidi\xF3:\n- Madera de
+    mait\xE9n\n- Pegamento de larvas\n- Un copihue\n- Dos plumas de alicanto"
   maderaSprite: {fileID: -8817802233160650007, guid: f45c94f79d819830288c1b50d736bae2, type: 3}
   pegamentoSprite: {fileID: 8197731244994759439, guid: a58b9ff1ca42df459a3038fdf63264aa, type: 3}
   copihueSprite: {fileID: -8459800288159188454, guid: 82e1940778e2da7c0943f32a6e8cb7d8, type: 3}
   plumasSprite: {fileID: 5137804033666340490, guid: 5156fa878e6fac5c3bd3592051b33599, type: 3}
---- !u!1 &880200010 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2744040135208898127, guid: 60ced1ec05122339889a19a843b90afd, type: 3}
-  m_PrefabInstance: {fileID: 6171760938407719620}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &954747683
 GameObject:
   m_ObjectHideFlags: 0
@@ -2707,6 +2714,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TravesiaACasa.Rooms.RoomGraphManager
   startingNode: {fileID: 11400000, guid: e22a580a441df8cc29096bfd67a36864, type: 2}
   player: {fileID: 137498656}
+  entryClampHalfExtents: {x: 8.6, y: 3.6}
 --- !u!4 &1167662415
 Transform:
   m_ObjectHideFlags: 0

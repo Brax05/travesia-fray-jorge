@@ -33,6 +33,10 @@ namespace TravesiaACasa.Rooms
         [Header("Diálogo del AveNegra")]
         [SerializeField] private string speakerName = "Carpinterito";
 
+        [Tooltip("Retrato que se muestra en el cuadro de diálogo (aveDialogo, la versión hablando). " +
+                 "Si queda vacío se usa el sprite caminante del AveNegra.")]
+        [SerializeField] private Sprite avatarSprite;
+
         [TextArea]
         [SerializeField] private string dialogueLine =
             "¡Piip! ¡Se me ocurrió una idea para que vuelvas a casa! " +
@@ -46,6 +50,9 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private string missionText =
             "Recolecta los materiales que\nCarpintero te pidió:\n" +
             "- Madera de maitén\n- Pegamento de larvas\n- Un copihue\n- Dos plumas de alicanto";
+
+        [Tooltip("Cuántos segundos parpadea el letrero MISIÓN del HUD al aceptar la misión.")]
+        [SerializeField] private float blinkDurationSeconds = 10f;
 
         [Header("Iconos de materiales (fila inferior del letrero)")]
         [SerializeField] private Sprite maderaSprite;
@@ -118,7 +125,9 @@ namespace TravesiaACasa.Rooms
 
             // Se le ocurre la idea y se pone a hablar.
             if (ideaBubble != null) ideaBubble.SetActive(true);
-            GameObject dialoguePanel = OpenDialogueAsAveNegra(aveRenderer != null ? aveRenderer.sprite : null,
+            Sprite portrait = avatarSprite != null ? avatarSprite
+                : (aveRenderer != null ? aveRenderer.sprite : null);
+            GameObject dialoguePanel = OpenDialogueAsAveNegra(portrait,
                 out Text dialogueText, out string originalLine,
                 out Image avatarImage, out Sprite originalAvatar,
                 out Text nameText, out string originalName);
@@ -234,12 +243,17 @@ namespace TravesiaACasa.Rooms
             if (letrero == null || !letrero.TryGetComponent(out Image image)) yield break;
 
             Color color = image.color;
-            while (true)
+            float elapsed = 0f;
+            while (elapsed < blinkDurationSeconds)
             {
+                elapsed += Time.unscaledDeltaTime;
                 color.a = Mathf.Lerp(0.25f, 1f, Mathf.PingPong(Time.unscaledTime * 2.2f, 1f));
                 image.color = color;
                 yield return null;
             }
+
+            color.a = 1f;
+            image.color = color;
         }
 
         private GameObject BuildMissionPanel(Transform canvas)

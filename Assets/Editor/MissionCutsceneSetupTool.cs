@@ -81,6 +81,7 @@ public static class MissionCutsceneSetupTool
         SerializedObject so = new SerializedObject(cutscene);
         so.FindProperty("aveNegra").objectReferenceValue = aveNegra.gameObject;
         so.FindProperty("ideaBubble").objectReferenceValue = burbuja.gameObject;
+        so.FindProperty("avatarSprite").objectReferenceValue = LoadSprite("aveDialogo.png");
         so.FindProperty("letreroFondoSprite").objectReferenceValue = LoadSprite("LetreroFondo.png");
         so.FindProperty("tituloMisionSprite").objectReferenceValue = LoadSprite("TituloMision.png");
         so.FindProperty("maderaSprite").objectReferenceValue = LoadSprite("madera.png");
