@@ -556,7 +556,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f20404ff6c68f9babb83d3c30d6b3016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TravesiaACasa.Rooms.BirdPlayerController
-  moveSpeed: 4
+  moveSpeed: 6
 --- !u!4 &137498656
 Transform:
   m_ObjectHideFlags: 0
