@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms
@@ -23,7 +21,7 @@ namespace TravesiaACasa.Rooms
     public class CameraRoomFollower : MonoBehaviour
     {
         [Tooltip("Nombre del hijo de cada room que hace de fondo.")]
-        [SerializeField] private string backgroundName = "Fondo";
+        [SerializeField] private string backgroundName = RoomBackgroundLocator.DefaultName;
 
         [Tooltip("Zoom a usar si una room no tiene fondo identificable.")]
         [SerializeField] private float fallbackOrthographicSize = 4.388184f;
@@ -34,27 +32,12 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private float maxOrthographicSize = 4.9f;
 
         private Camera cam;
-        private readonly List<SpriteRenderer> backgrounds = new List<SpriteRenderer>();
         private RoomNode lastNode;
         private float lastAspect;
 
         private void Awake()
         {
             cam = GetComponent<Camera>();
-            RefreshBackgrounds();
-        }
-
-        /// <summary>
-        /// Cachea los fondos de todas las rooms. Se buscan por nombre en
-        /// vez de por jerarquía para no atar la cámara a cómo estén
-        /// organizadas las rooms en la escena.
-        /// </summary>
-        private void RefreshBackgrounds()
-        {
-            backgrounds.Clear();
-            backgrounds.AddRange(
-                FindObjectsByType<SpriteRenderer>(FindObjectsInactive.Include, FindObjectsSortMode.None)
-                    .Where(sr => sr.name == backgroundName && sr.sprite != null));
         }
 
         private void LateUpdate()
@@ -77,7 +60,7 @@ namespace TravesiaACasa.Rooms
 
         private void FitToBackground(Vector3 center)
         {
-            SpriteRenderer background = FindBackgroundNear(center);
+            SpriteRenderer background = RoomBackgroundLocator.Find(center, backgroundName);
             if (background == null)
             {
                 cam.orthographicSize = fallbackOrthographicSize;
@@ -103,27 +86,5 @@ namespace TravesiaACasa.Rooms
                 : fitted;
         }
 
-        /// <summary>Fondo cuyo centro está más cerca del centro de la room.</summary>
-        private SpriteRenderer FindBackgroundNear(Vector3 center)
-        {
-            // Una room puede haberse creado después del Awake (o la escena
-            // recargarse en el Editor): si el cache quedó viejo, se rehace.
-            if (backgrounds.Count == 0 || backgrounds.Any(b => b == null))
-                RefreshBackgrounds();
-
-            SpriteRenderer best = null;
-            float bestDistance = float.MaxValue;
-            foreach (SpriteRenderer candidate in backgrounds)
-            {
-                if (candidate == null) continue;
-                float distance = ((Vector2)(candidate.bounds.center - center)).sqrMagnitude;
-                if (distance < bestDistance)
-                {
-                    bestDistance = distance;
-                    best = candidate;
-                }
-            }
-            return best;
-        }
     }
 }
