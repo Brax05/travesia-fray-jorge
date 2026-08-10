@@ -58,6 +58,26 @@ namespace TravesiaACasa.Rooms
             }
         }
 
+        /// <summary>
+        /// Sincroniza inmediatamente posición y zoom. Se usa con la pantalla
+        /// cubierta para poder calcular la entrada respecto del encuadre de
+        /// la room destino, sin esperar al siguiente LateUpdate.
+        /// </summary>
+        public void SnapToRoom(RoomNode room)
+        {
+            if (room == null)
+                return;
+
+            if (cam == null)
+                cam = GetComponent<Camera>();
+
+            Vector3 center = room.testWorldPosition;
+            transform.position = new Vector3(center.x, center.y, transform.position.z);
+            lastNode = room;
+            lastAspect = cam.aspect;
+            FitToBackground(center);
+        }
+
         private void FitToBackground(Vector3 center)
         {
             SpriteRenderer background = RoomBackgroundLocator.Find(center, backgroundName);

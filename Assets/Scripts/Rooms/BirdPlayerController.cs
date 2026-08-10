@@ -30,16 +30,30 @@ namespace TravesiaACasa.Rooms
         private SpriteRenderer spriteRenderer;
         private Vector2 input;     // teclado + HUD ya combinados (se recalcula en Update)
         private Vector2 hudInput;  // suma de los HudMoveButton actualmente presionados
+        private bool movementEnabled = true;
+
+        /// <summary>Direccion que el jugador esta intentando mover ahora.</summary>
+        public Vector2 MovementInput => movementEnabled ? input : Vector2.zero;
+
+        public bool MovementEnabled => movementEnabled;
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             rb.gravityScale = 0f; // vista top-down, no queremos caída
+            rb.interpolation = RigidbodyInterpolation2D.Interpolate;
+            rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         }
 
         private void Update()
         {
+            if (!movementEnabled)
+            {
+                input = Vector2.zero;
+                return;
+            }
+
             input = ReadKeyboardInput() + hudInput;
             // Cada componente a [-1,1] por si teclado y D-pad apuntan igual
             input.x = Mathf.Clamp(input.x, -1f, 1f);
@@ -63,7 +77,34 @@ namespace TravesiaACasa.Rooms
 
         private void FixedUpdate()
         {
-            rb.linearVelocity = input.normalized * moveSpeed;
+            rb.linearVelocity = movementEnabled
+                ? input.normalized * moveSpeed
+                : Vector2.zero;
+        }
+
+        /// <summary>
+        /// Bloquea el movimiento durante acciones atomicas como un cambio de
+        /// room. Tambien limpia el D-pad para que un PointerUp tapado por el
+        /// fundido no deje al personaje caminando solo.
+        /// </summary>
+        public void SetMovementEnabled(bool enabled)
+        {
+            movementEnabled = enabled;
+            input = Vector2.zero;
+
+            if (!enabled)
+                hudInput = Vector2.zero;
+
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
+        }
+
+        private void OnDisable()
+        {
+            input = Vector2.zero;
+            hudInput = Vector2.zero;
+            if (rb != null)
+                rb.linearVelocity = Vector2.zero;
         }
 
         /// <summary>Un botón del D-pad empezó a presionarse (HudMoveButton).</summary>
