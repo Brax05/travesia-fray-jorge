@@ -52,10 +52,10 @@ namespace TravesiaACasa.Rooms
 
         private readonly List<MaterialRequirement> requirements = new List<MaterialRequirement>
         {
-            new MaterialRequirement("madera_maiten", "Madera de maitén", 1, "Assets/Arte/juego/madera.png"),
-            new MaterialRequirement("pegamento_larvas", "Pegamento de larvas", 1, "Assets/Arte/juego/pegamento.png"),
-            new MaterialRequirement("copihue", "Un copihue", 1, "Assets/Arte/juego/copi.png"),
-            new MaterialRequirement("pluma_alicanto", "Plumas de alicanto", 2, "Assets/Arte/juego/plumas.png")
+            new MaterialRequirement("madera_maiten", "Madera de maitén", 1, "Assets/Arte/juego/Items/madera.png"),
+            new MaterialRequirement("pegamento_larvas", "Pegamento de larvas", 1, "Assets/Arte/juego/Items/pegamento.png"),
+            new MaterialRequirement("copihue", "Un copihue", 1, "Assets/Arte/juego/Items/copi.png"),
+            new MaterialRequirement("pluma_alicanto", "Plumas de alicanto", 2, "Assets/Arte/juego/Items/plumas.png")
         };
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
