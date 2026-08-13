@@ -106,7 +106,7 @@ namespace TravesiaACasa.Menu.Editor
             RectTransform volverRt = volverBtn.GetComponent<RectTransform>();
             PlaceUI(volverRt, VolverAnchor, Center, Vector2.zero, SizeFromSprite(volverSprite, 110f));
 
-            // Botón para regresar al menú principal usando el arte entregado.
+            // Acción textual ubicada en una esquina para no confundirse con un ajuste.
             Sprite menuButtonSprite = RequireSprite(MenuButtonPath);
             Button homeBtn = CreateButton(panelT, "BotonHome", menuButtonSprite);
             RectTransform homeRt = homeBtn.GetComponent<RectTransform>();
@@ -310,7 +310,7 @@ namespace TravesiaACasa.Menu.Editor
             rt.sizeDelta = size;
         }
 
-        [MenuItem("Game/Construir o Actualizar Panel de Pausa (con Botón HOME)")]
+        [MenuItem("Game/Construir o Actualizar Panel de Pausa")]
         public static void BuildInActiveCanvas()
         {
             Canvas canvas = Object.FindFirstObjectByType<Canvas>();
@@ -336,7 +336,7 @@ namespace TravesiaACasa.Menu.Editor
             }
 
             UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(canvas.gameObject.scene);
-            Debug.Log("[SettingsPanelBuildUtils] ¡Panel de Pausa/Configuración con Botón HOME creado con éxito en el Canvas!");
+            Debug.Log("[SettingsPanelBuildUtils] Panel de Pausa/Configuración creado con éxito en el Canvas.");
         }
     }
 }

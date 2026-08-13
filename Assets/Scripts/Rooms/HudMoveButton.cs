@@ -19,12 +19,20 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private Vector2 direction = Vector2.up;
 
         private bool pressed;
+        private uint pressInputRevision;
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (pressed || player == null) return;
+            if (player == null || !player.MovementEnabled) return;
+
+            // Una transicion puede haber cancelado el toque sin que Android
+            // alcanzara a entregar PointerUp/Exit a este boton.
+            if (pressed && pressInputRevision != player.HudInputRevision)
+                pressed = false;
+
+            if (pressed) return;
             pressed = true;
-            player.AddHudDirection(direction);
+            pressInputRevision = player.AddHudDirection(direction);
         }
 
         public void OnPointerUp(PointerEventData eventData) => Release();
@@ -37,7 +45,7 @@ namespace TravesiaACasa.Rooms
         {
             if (!pressed || player == null) return;
             pressed = false;
-            player.RemoveHudDirection(direction);
+            player.RemoveHudDirection(direction, pressInputRevision);
         }
     }
 }
