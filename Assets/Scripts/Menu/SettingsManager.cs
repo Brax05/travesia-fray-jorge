@@ -44,6 +44,9 @@ namespace TravesiaACasa.Menu
             // sin cortes al pasar del menú a la partida (y entre escenas).
             if (Instance.GetComponent<BackgroundMusicPlayer>() == null)
                 Instance.gameObject.AddComponent<BackgroundMusicPlayer>();
+
+            if (Instance.GetComponent<ColorblindFilter>() == null)
+                Instance.gameObject.AddComponent<ColorblindFilter>();
         }
 
         public float AmbienteVolume

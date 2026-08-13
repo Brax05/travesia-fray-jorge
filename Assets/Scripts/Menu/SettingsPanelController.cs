@@ -89,14 +89,31 @@ namespace TravesiaACasa.Menu
         public void OnHomeClicked()
         {
             Time.timeScale = 1f;
-            ScreenTransition.TryLoadScene(menuSceneName);
+            Transform rootT = transform.parent != null && transform.parent.name == "SettingsPanel" ? transform.parent : transform;
+            rootT.gameObject.SetActive(false);
+
+            MainMenuController mmc = FindFirstObjectByType<MainMenuController>();
+            if (mmc != null)
+            {
+                mmc.OnCloseSettingsClicked();
+            }
+            else
+            {
+                ScreenTransition.TryLoadScene(menuSceneName);
+            }
         }
 
         public void OnVolverClicked()
         {
             Time.timeScale = 1f;
-            Transform rootT = transform.parent != null ? transform.parent : transform;
+            Transform rootT = transform.parent != null && transform.parent.name == "SettingsPanel" ? transform.parent : transform;
             rootT.gameObject.SetActive(false);
+
+            MainMenuController mmc = FindFirstObjectByType<MainMenuController>();
+            if (mmc != null)
+            {
+                mmc.OnCloseSettingsClicked();
+            }
         }
 
         private void AutoFindButtons()
