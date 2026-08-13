@@ -105,8 +105,45 @@ namespace TravesiaACasa.EditorTools
                 }
             }
 
-            AssetDatabase.Refresh();
-            Debug.Log("[AssetOrganizerTools] Estructura de carpetas verificada y creada correctamente.");
+        [MenuItem("Game/Organización/4. Organizar Jerarquía de la Escena (Hierarchy)", false, 4)]
+        public static void OrganizeSceneHierarchy()
+        {
+            GameObject paredesRoot = GameObject.Find("ParedesInvisibles");
+            if (paredesRoot == null)
+                paredesRoot = new GameObject("ParedesInvisibles");
+
+            GameObject decorRoot = GameObject.Find("DecoracionEscena");
+            if (decorRoot == null)
+                decorRoot = new GameObject("DecoracionEscena");
+
+            GameObject[] rootObjects = EditorSceneManager.GetActiveScene().GetRootGameObjects();
+            int paredesMoved = 0, decorMoved = 0;
+
+            foreach (GameObject go in rootObjects)
+            {
+                if (go == paredesRoot || go == decorRoot) continue;
+
+                string name = go.name.ToLower();
+
+                if (name.Contains("paredinvisible"))
+                {
+                    Undo.SetTransformParent(go.transform, paredesRoot.transform, "Organizar Jerarquia");
+                    paredesMoved++;
+                }
+                else if (name.Contains("roca") || name.Contains("arbusto") || name.Contains("camino"))
+                {
+                    if (go.name != "Main Camera" && go.name != "Jugador_Yal" && go.name != "GraphManager" &&
+                        go.name != "EventSystem" && go.name != "HUD" && go.name != "GameHudController" &&
+                        go.name != "Rooms" && go.name != "Exits")
+                    {
+                        Undo.SetTransformParent(go.transform, decorRoot.transform, "Organizar Jerarquia");
+                        decorMoved++;
+                    }
+                }
+            }
+
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+            Debug.Log($"[AssetOrganizerTools] Jerarquía organizada: {paredesMoved} Paredes en 'ParedesInvisibles', {decorMoved} Decoraciones en 'DecoracionEscena'.");
         }
     }
 }
