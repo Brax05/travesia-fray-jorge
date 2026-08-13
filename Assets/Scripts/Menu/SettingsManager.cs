@@ -14,7 +14,7 @@ namespace TravesiaACasa.Menu
     /// Configuración funciona igual abierto desde el menú que desde el
     /// HUD del juego, sin depender de que cada escena recuerde crear el
     /// objeto. Dispara Changed cada vez que un valor cambia para que
-    /// consumidores (BrightnessOverlay, un futuro AudioManager) se
+    /// consumidores (BrightnessOverlay, BackgroundMusicPlayer) se
     /// actualicen al instante.
     /// </summary>
     public class SettingsManager : MonoBehaviour
@@ -34,9 +34,16 @@ namespace TravesiaACasa.Menu
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
         {
-            if (Instance != null) return;
-            var go = new GameObject("SettingsManager (Auto)");
-            go.AddComponent<SettingsManager>();
+            if (Instance == null)
+            {
+                var go = new GameObject("SettingsManager (Auto)");
+                go.AddComponent<SettingsManager>();
+            }
+
+            // La música vive en el mismo objeto persistente para continuar
+            // sin cortes al pasar del menú a la partida (y entre escenas).
+            if (Instance.GetComponent<BackgroundMusicPlayer>() == null)
+                Instance.gameObject.AddComponent<BackgroundMusicPlayer>();
         }
 
         public float AmbienteVolume
