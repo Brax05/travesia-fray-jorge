@@ -29,6 +29,10 @@ namespace TravesiaACasa.Rooms
         public UnityEvent onInteract;
         public UnityEvent onPeck;
 
+        private Image muteButtonImage;
+        private GameObject muteIndicator;
+        private Color muteButtonNormalColor = Color.white;
+
         private void Awake()
         {
 #if UNITY_EDITOR
@@ -36,6 +40,7 @@ namespace TravesiaACasa.Rooms
             AutoAssignMuteButtonSprite();
 #endif
             TopLeftGameplayHud.Ensure(topLeftAvatarSprite, topLeftHealthBarSprite, topLeftHeartSprite, topLeftMissionSprite);
+            InitializeMuteVisual();
         }
 
 #if UNITY_EDITOR
@@ -172,7 +177,72 @@ namespace TravesiaACasa.Rooms
         public void OnMuteClicked()
         {
             AudioListener.pause = !AudioListener.pause;
+            RefreshMuteVisual(AudioListener.pause);
             Debug.Log($"[GameHud] Mute {(AudioListener.pause ? "activado" : "desactivado")}");
+        }
+
+        private void InitializeMuteVisual()
+        {
+            Canvas canvas = TopLeftGameplayHud.FindGameplayCanvas();
+            if (canvas == null)
+                return;
+
+            Transform muteTransform = TopLeftGameplayHud.FindDescendant(canvas.transform, "MuteBtn");
+            if (muteTransform == null || !muteTransform.TryGetComponent(out muteButtonImage))
+                return;
+
+            muteButtonNormalColor = muteButtonImage.color;
+
+            Transform existingIndicator = muteTransform.Find("MutedIndicator");
+            if (existingIndicator != null)
+            {
+                muteIndicator = existingIndicator.gameObject;
+            }
+            else
+            {
+                muteIndicator = CreateMuteIndicator(muteTransform);
+            }
+
+            RefreshMuteVisual(AudioListener.pause);
+        }
+
+        private static GameObject CreateMuteIndicator(Transform parent)
+        {
+            GameObject indicator = new GameObject("MutedIndicator", typeof(RectTransform));
+            indicator.layer = parent.gameObject.layer;
+            indicator.transform.SetParent(parent, false);
+
+            RectTransform rect = indicator.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.08f, 0.43f);
+            rect.anchorMax = new Vector2(0.92f, 0.57f);
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = Vector2.zero;
+            rect.localRotation = Quaternion.Euler(0f, 0f, -35f);
+
+            Image slash = indicator.AddComponent<Image>();
+            slash.color = new Color(0.88f, 0.12f, 0.08f, 1f);
+            slash.raycastTarget = false;
+
+            Outline outline = indicator.AddComponent<Outline>();
+            outline.effectColor = new Color(0.28f, 0.03f, 0.02f, 0.9f);
+            outline.effectDistance = new Vector2(2f, -2f);
+            outline.useGraphicAlpha = true;
+
+            rect.SetAsLastSibling();
+            return indicator;
+        }
+
+        private void RefreshMuteVisual(bool muted)
+        {
+            if (muteButtonImage != null)
+            {
+                muteButtonImage.color = muted
+                    ? Color.Lerp(muteButtonNormalColor, Color.black, 0.55f)
+                    : muteButtonNormalColor;
+            }
+
+            if (muteIndicator != null)
+                muteIndicator.SetActive(muted);
         }
 
         /// <summary>

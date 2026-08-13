@@ -31,6 +31,13 @@ namespace TravesiaACasa.Rooms
         [Tooltip("Si está marcado, el ave arranca ya con una misión que ofrecer (globo visible).")]
         [SerializeField] private bool hasMissionOnStart = true;
 
+        [Header("Animación de reposo")]
+        [Tooltip("Duración de una respiración completa, con el mismo ritmo que AveNegra.")]
+        [SerializeField, Min(0.2f)] private float idleBreathCycleSeconds = 1f;
+
+        [Tooltip("Compresión vertical máxima. El borde inferior de las patas permanece fijo.")]
+        [SerializeField, Range(0f, 0.08f)] private float idleBreathCompression = 0.028f;
+
         [Header("Referencias HUD a ocultar")]
         [Tooltip("Controles de movimiento en pantalla (D-pad).")]
         [SerializeField] private GameObject dpad;
@@ -56,6 +63,15 @@ namespace TravesiaACasa.Rooms
 
         private void Start()
         {
+            SpriteRenderer birdRenderer = GetComponent<SpriteRenderer>();
+            if (birdRenderer != null)
+            {
+                GroundedSpriteBreathing breathing = GetComponent<GroundedSpriteBreathing>();
+                if (breathing == null)
+                    breathing = gameObject.AddComponent<GroundedSpriteBreathing>();
+                breathing.Begin(birdRenderer, idleBreathCycleSeconds, idleBreathCompression);
+            }
+
             // El jugador vive en la raíz de la escena (Jugador_Yal); se
             // busca una sola vez en vez de referenciarlo por Inspector
             // para que el ave funcione igual si se convierte en prefab.
@@ -166,6 +182,81 @@ namespace TravesiaACasa.Rooms
         {
             if (DialogueOpen) dialoguePanel.SetActive(false);
             SetMission(false);
+        }
+    }
+
+    /// <summary>
+    /// Respiración visual reutilizable que conserva el borde inferior del
+    /// sprite en su sitio. La imagen se anima en un hijo para no escalar otros
+    /// elementos asociados al personaje, como globos o indicadores.
+    /// </summary>
+    [DisallowMultipleComponent]
+    public sealed class GroundedSpriteBreathing : MonoBehaviour
+    {
+        private Coroutine breathingRoutine;
+        private SpriteRenderer breathingRenderer;
+
+        public SpriteRenderer Begin(SpriteRenderer source, float cycleSeconds, float compression)
+        {
+            if (source == null || breathingRoutine != null)
+                return breathingRenderer != null ? breathingRenderer : source;
+
+            GameObject visualObject = new GameObject($"{source.gameObject.name}BreathingVisual");
+            visualObject.layer = source.gameObject.layer;
+            Transform visualTransform = visualObject.transform;
+            visualTransform.SetParent(source.transform, false);
+
+            breathingRenderer = visualObject.AddComponent<SpriteRenderer>();
+            breathingRenderer.sprite = source.sprite;
+            breathingRenderer.color = source.color;
+            breathingRenderer.flipX = source.flipX;
+            breathingRenderer.flipY = source.flipY;
+            breathingRenderer.drawMode = source.drawMode;
+            breathingRenderer.size = source.size;
+            breathingRenderer.maskInteraction = source.maskInteraction;
+            breathingRenderer.spriteSortPoint = source.spriteSortPoint;
+            breathingRenderer.sortingLayerID = source.sortingLayerID;
+            breathingRenderer.sortingOrder = source.sortingOrder;
+            breathingRenderer.sharedMaterials = source.sharedMaterials;
+
+            source.enabled = false;
+            breathingRoutine = StartCoroutine(Animate(
+                breathingRenderer,
+                Mathf.Max(0.2f, cycleSeconds),
+                Mathf.Clamp(compression, 0f, 0.08f)));
+            return breathingRenderer;
+        }
+
+        private static System.Collections.IEnumerator Animate(
+            SpriteRenderer renderer,
+            float cycleSeconds,
+            float compression)
+        {
+            Transform visual = renderer.transform;
+            Vector3 baseScale = visual.localScale;
+            Vector3 basePosition = visual.localPosition;
+            float elapsed = 0f;
+
+            while (renderer != null)
+            {
+                float phase = Mathf.Repeat(elapsed / cycleSeconds, 1f);
+                float breath = 0.5f - 0.5f * Mathf.Cos(phase * Mathf.PI * 2f);
+                float verticalFactor = 1f - compression * breath;
+
+                Vector3 scale = baseScale;
+                scale.y *= verticalFactor;
+                visual.localScale = scale;
+
+                float footOffset = renderer.sprite != null
+                    ? renderer.sprite.bounds.min.y * baseScale.y
+                    : 0f;
+                Vector3 position = basePosition;
+                position.y += footOffset * (1f - verticalFactor);
+                visual.localPosition = position;
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
         }
     }
 }
