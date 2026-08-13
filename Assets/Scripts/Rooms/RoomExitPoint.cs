@@ -93,11 +93,10 @@ namespace TravesiaACasa.Rooms
 
             Collider2D playerCollider = manager.PlayerCollider;
             if (!PlayerIsMovingTowardTarget(playerCollider, manager)) return;
+            if (!IsWithinExitTriggerSpan(playerCollider, manager)) return;
             if (!HasReachedVisibleRoomEdge(playerCollider, manager)) return;
 
-            // El borde completo funciona como salida virtual. El trigger
-            // físico se conserva como guía y respaldo, pero ya no obliga al
-            // jugador a volver al centro de la pantalla.
+            // El borde completo funciona como salida virtual en el tramo del trigger.
             trackedPlayer = playerCollider;
             TryActivateTrackedPlayer();
         }
@@ -228,6 +227,33 @@ namespace TravesiaACasa.Rooms
             return travelDirection.y >= 0f
                 ? verticalViewportPoint.y >= 1f - margin
                 : verticalViewportPoint.y <= margin;
+        }
+
+        private bool IsWithinExitTriggerSpan(Collider2D playerCollider, RoomGraphManager manager)
+        {
+            if (!TryGetTravelDirection(manager, out Vector2 travelDirection))
+                return true;
+
+            Collider2D triggerCollider = GetComponent<Collider2D>();
+            if (triggerCollider == null) return true;
+
+            Bounds triggerBounds = triggerCollider.bounds;
+            Bounds playerBounds = playerCollider.bounds;
+
+            // Para viajes verticales (arriba/abajo), el jugador debe estar en el ancho del trigger de salida
+            if (Mathf.Abs(travelDirection.y) > Mathf.Abs(travelDirection.x))
+            {
+                float margin = Mathf.Max(playerBounds.extents.x * 0.5f, 0.25f);
+                return playerBounds.max.x >= triggerBounds.min.x - margin &&
+                       playerBounds.min.x <= triggerBounds.max.x + margin;
+            }
+            // Para viajes horizontales (izquierda/derecha), el jugador debe estar en el alto del trigger de salida
+            else
+            {
+                float margin = Mathf.Max(playerBounds.extents.y * 0.5f, 0.25f);
+                return playerBounds.max.y >= triggerBounds.min.y - margin &&
+                       playerBounds.min.y <= triggerBounds.max.y + margin;
+            }
         }
 
         private bool IsOnOuterSideOfTrigger(Collider2D playerCollider, RoomGraphManager manager)

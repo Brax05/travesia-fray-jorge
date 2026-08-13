@@ -36,6 +36,14 @@ namespace TravesiaACasa.Rooms
 
         private bool collected;
 
+        private void Awake()
+        {
+            if (!MissionIntroCutscene.IsMissionAccepted)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
         private void Reset()
         {
             GetComponent<Collider2D>().isTrigger = true;

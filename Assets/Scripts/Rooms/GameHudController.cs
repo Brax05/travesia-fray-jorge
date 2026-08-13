@@ -41,6 +41,7 @@ namespace TravesiaACasa.Rooms
 #endif
             TopLeftGameplayHud.Ensure(topLeftAvatarSprite, topLeftHealthBarSprite, topLeftHeartSprite, topLeftMissionSprite);
             InitializeMuteVisual();
+            MissionStatusPopup.EnsureInstance();
         }
 
 #if UNITY_EDITOR
@@ -114,7 +115,7 @@ namespace TravesiaACasa.Rooms
 
         private void AutoAssignMuteButtonSprite()
         {
-            Sprite muteSprite = LoadEditorSprite("Assets/Arte/juego/Mute.png");
+            Sprite muteSprite = LoadEditorSprite("Assets/Arte/juego/UI/Mute.png");
             if (muteSprite == null)
                 return;
 

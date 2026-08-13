@@ -37,6 +37,9 @@ namespace TravesiaACasa.Rooms
 
         private void FixedUpdate()
         {
+            if (RoomGraphManager.Instance != null && RoomGraphManager.Instance.IsTransitioning)
+                return;
+
             RoomNode current = RoomGraphManager.Instance != null ? RoomGraphManager.Instance.CurrentNode : null;
             if (current == null) return;
 
