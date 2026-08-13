@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using TravesiaACasa.Menu;
+using TravesiaACasa.Rooms;
 using static TravesiaACasa.Rooms.Editor.RoomSceneBuildUtils;
 
 namespace TravesiaACasa.Menu.Editor
@@ -104,6 +105,27 @@ namespace TravesiaACasa.Menu.Editor
             RectTransform volverRt = volverBtn.GetComponent<RectTransform>();
             PlaceUI(volverRt, VolverAnchor, Center, Vector2.zero, SizeFromSprite(volverSprite, 110f));
 
+            // Botón Home (centrado abajo en el panel café para regresar al menú de inicio)
+            Sprite casaSprite = LoadSprite($"{ArtRoot}/configuracion/icono_casa.png");
+            Button homeBtn = CreateButton(panelT, "BotonHome", onSprite);
+            RectTransform homeRt = homeBtn.GetComponent<RectTransform>();
+            PlaceUI(homeRt, new Vector2(0.5f, 0.10f), Center, Vector2.zero, new Vector2(110f, 95f));
+
+            if (casaSprite != null)
+            {
+                Image casaImg = CreateImage(homeRt, "IconoCasa", casaSprite);
+                PlaceUI(casaImg.rectTransform, Center, Center, Vector2.zero, new Vector2(55f, 55f));
+            }
+            else
+            {
+                Text homeLabel = CreateLabel(homeRt, "TextHome", "HOME", 38, TextAnchor.MiddleCenter);
+                StretchFull(homeLabel.rectTransform);
+                homeLabel.color = Color.white;
+                Outline homeOutline = homeLabel.gameObject.AddComponent<Outline>();
+                homeOutline.effectColor = new Color(0.2f, 0.12f, 0.05f, 1f);
+                homeOutline.effectDistance = new Vector2(2.5f, -2.5f);
+            }
+
             GameObject spcGO = new GameObject("SettingsPanelController");
             spcGO.transform.SetParent(root.transform, false);
             SettingsPanelController spc = spcGO.AddComponent<SettingsPanelController>();
@@ -117,6 +139,8 @@ namespace TravesiaACasa.Menu.Editor
             SetPrivateField(spc, "vibracionImage", vibracionImg);
             SetPrivateField(spc, "toggleOffSprite", offSprite);
             SetPrivateField(spc, "toggleOnSprite", onSprite);
+            SetPrivateField(spc, "homeButton", homeBtn);
+            SetPrivateField(spc, "volverButton", volverBtn);
 
             return volverBtn;
         }
@@ -294,6 +318,35 @@ namespace TravesiaACasa.Menu.Editor
             rt.pivot = pivot;
             rt.anchoredPosition = anchoredOffset;
             rt.sizeDelta = size;
+        }
+
+        [MenuItem("Game/Construir o Actualizar Panel de Pausa (con Botón HOME)")]
+        public static void BuildInActiveCanvas()
+        {
+            Canvas canvas = Object.FindFirstObjectByType<Canvas>();
+            if (canvas == null)
+            {
+                Debug.LogError("[SettingsPanelBuildUtils] No se encontró ningún Canvas en la escena activa.");
+                return;
+            }
+
+            Transform existing = canvas.transform.Find("SettingsPanel");
+            if (existing != null)
+            {
+                Object.DestroyImmediate(existing.gameObject);
+                Debug.Log("[SettingsPanelBuildUtils] Se eliminó el panel de configuración anterior para reemplazarlo.");
+            }
+
+            Button volverBtn = BuildSettingsPanel(canvas.transform, out GameObject root);
+            root.SetActive(false);
+
+            if (canvas.TryGetComponent(out GameHudController hudController))
+            {
+                SetPrivateField(hudController, "settingsPanelRoot", root);
+            }
+
+            UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(canvas.gameObject.scene);
+            Debug.Log("[SettingsPanelBuildUtils] ¡Panel de Pausa/Configuración con Botón HOME creado con éxito en el Canvas!");
         }
     }
 }

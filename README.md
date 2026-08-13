@@ -61,8 +61,8 @@ humanos) que son nocivos para ellas.
 
 - **Mover:** WASD / flechas, o el D-pad del HUD (táctil).
 - **Cambiar de room:** camina hacia una salida en el borde de la room;
-  el cambio es instantáneo (sin transición) y la cámara queda fija
-  centrada en la room nueva.
+  un fundido breve cubre el cambio y la cámara queda fija centrada en
+  la room nueva.
 - **Interactuar / Picotear:** botones del HUD (por ahora disparan
   UnityEvents; la lógica de cada room se engancha desde el Inspector).
 - **Configuración:** ruedita del HUD o `Escape` — pausa el juego
@@ -99,17 +99,27 @@ El mundo no es un mapa continuo: es un **grafo de rooms**. Cada room es un
 
 ### Cómo funciona un cambio de room
 
-1. `RoomExitPoint` (trigger en el borde de la room) detecta que el
-   jugador lo pisa moviéndose **hacia afuera** (chequeo de dirección,
-   así no te teletransporta al pasar por al lado).
+1. `RoomExitPoint` detecta que el jugador pisa una salida moviéndose
+   **hacia afuera** y deja esa salida armada. El cambio espera hasta que
+   el sprite del ave alcanza el borde visible de la cámara, aunque ya
+   haya atravesado el trigger. Además, toda la extensión del borde
+   conectado funciona como salida: no es necesario alinearse otra vez
+   con el pequeño collider después de tocar un borde bloqueado.
 2. Llama a `RoomGraphManager.TravelTo(roomDestino, puntoDeEntrada)`,
    que valida que la room destino esté en `connections` de la actual.
-3. El jugador se **teletransporta al punto de entrada** de la room nueva
-   (sin deslizamiento ni fundido a negro).
+3. Se bloquean solicitudes repetidas y el control durante un fundido
+   rápido (~0,18 s); con la pantalla cubierta, cámara y `Rigidbody2D` se sincronizan
+   con la room nueva. El ave aparece cerca del borde visible y el portal
+   recíproco queda armado, por lo que puede volver inmediatamente sin
+   tener que cruzar primero el trigger en sentido contrario. Las salidas
+   laterales conservan su altura y las verticales conservan su posición
+   horizontal.
 4. `RoomGraphManager` dispara el evento `NodeChanged`; con eso:
    - `CameraRoomFollower` fija la cámara en el centro
      (`testWorldPosition`) de la room nueva, y
    - `RoomTransitionUI` actualiza la etiqueta "Room N" del HUD.
+5. El fundido de entrada devuelve el control al jugador. El mismo
+   servicio protege la carga asíncrona de Menú → Juego.
 
 ### Agregar una room nueva
 

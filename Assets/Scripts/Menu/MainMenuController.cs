@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace TravesiaACasa.Menu
 {
@@ -18,7 +17,7 @@ namespace TravesiaACasa.Menu
 
         public void OnPlayClicked()
         {
-            SceneManager.LoadScene(gameSceneName);
+            ScreenTransition.TryLoadScene(gameSceneName);
         }
 
         public void OnOpenSettingsClicked()

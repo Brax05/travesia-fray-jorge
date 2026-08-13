@@ -4,15 +4,12 @@ using UnityEngine;
 namespace TravesiaACasa.Rooms
 {
     /// <summary>
-    /// Controla en qué RoomNode está el jugador y valida que solo se
-    /// pueda mover a rooms realmente conectadas en el grafo.
+    /// Controla en que RoomNode esta el jugador y valida que solo se pueda
+    /// mover a rooms realmente conectadas en el grafo.
     ///
-    /// Cruzar de room no interrumpe al jugador: al pisar la salida
-    /// solo cambia el nodo actual (la cámara corta en seco vía
-    /// CameraRoomFollower) y el jugador sigue caminando con su propio
-    /// impulso, sin perder el control. Si el RoomExitPoint define un
-    /// entryPoint explícito, el jugador aparece ahí al instante (útil
-    /// para puertas que cruzan huecos o distancias grandes).
+    /// Cada viaje es una operacion atomica: bloquea nuevas solicitudes y el
+    /// movimiento, cubre la pantalla, sincroniza camara/fisica con la room
+    /// nueva y solo entonces devuelve el control.
     /// </summary>
     public class RoomGraphManager : MonoBehaviour
     {
@@ -25,15 +22,22 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private Transform player;
 
         [Header("Entrada a la room destino")]
-        [Tooltip("Al entrar sin entryPoint explícito, el jugador se reubica dentro de este " +
-                 "rectángulo (medio ancho/alto) alrededor del centro de la room destino. Evita " +
-                 "que camine por el vacío entre fondos (las rooms están separadas ~15 unidades " +
-                 "en vertical pero el fondo mide ~8.8 de alto).")]
+        [Tooltip("Al entrar sin entryPoint explicito, el jugador se reubica dentro de este " +
+                 "rectangulo (medio ancho/alto) alrededor del centro de la room destino.")]
         [SerializeField] private Vector2 entryClampHalfExtents = new Vector2(8.6f, 3.6f);
+        [Tooltip("Separacion visual entre el sprite del jugador y el borde al aparecer.")]
+        [SerializeField, Min(0f)] private float edgeSpawnPadding = 0.25f;
+
+        [Header("Transicion visual")]
+        [SerializeField, Min(0f)] private float fadeOutDuration = 0.07f;
+        [SerializeField, Min(0f)] private float coveredDuration = 0f;
+        [SerializeField, Min(0f)] private float fadeInDuration = 0.09f;
 
         public RoomNode CurrentNode { get; private set; }
+        public bool IsTransitioning { get; private set; }
+        public Collider2D PlayerCollider { get; private set; }
 
-        /// <summary>Se dispara cada vez que el jugador entra a una nueva room.</summary>
+        /// <summary>Se dispara cuando el jugador ya esta en la nueva room.</summary>
         public event Action<RoomNode> NodeChanged;
 
         private void Awake()
@@ -43,66 +47,206 @@ namespace TravesiaACasa.Rooms
                 Destroy(gameObject);
                 return;
             }
+
             Instance = this;
+            CachePlayerCollider();
         }
 
         private void Start()
         {
-            if (startingNode == null) return;
+            if (startingNode == null)
+                return;
 
-            // La carga inicial sí es un posicionamiento en seco: todavía
-            // no hay "desde dónde" entrar caminando.
+            CachePlayerCollider();
+
             CurrentNode = startingNode;
             if (player != null)
-                player.position = startingNode.testWorldPosition;
+                SetPlayerPosition(startingNode.testWorldPosition);
 
             NodeChanged?.Invoke(startingNode);
         }
 
-        /// <summary>
-        /// Intenta moverse al nodo destino. Si no está conectado al nodo
-        /// actual en el grafo, no hace nada (evita "atajos" ilegales
-        /// aunque algún trigger esté mal configurado).
-        /// </summary>
-        /// <param name="target">Room destino.</param>
-        /// <param name="entryPosition">
-        /// (Opcional) Posición exacta donde debe quedar el jugador dentro
-        /// de la room destino. Si es null, el jugador no se toca: entra
-        /// caminando por su cuenta.
-        /// </param>
-        public void TravelTo(RoomNode target, Vector3? entryPosition = null)
+        private void OnDestroy()
         {
-            if (target == null || target == CurrentNode) return;
+            if (Instance != this)
+                return;
+
+            SetPlayerControlEnabled(true);
+            Instance = null;
+        }
+
+        /// <summary>
+        /// Intenta iniciar el viaje al nodo destino. Devuelve false si la
+        /// ruta no es valida o ya hay una transicion en curso.
+        /// </summary>
+        public bool TravelTo(RoomNode target, Vector3? entryPosition = null)
+        {
+            if (target == null || target == CurrentNode || IsTransitioning)
+                return false;
 
             if (CurrentNode != null && !CurrentNode.IsConnectedTo(target))
             {
-                Debug.LogWarning($"[RoomGraphManager] '{target.roomId}' no está conectado a " +
-                                  $"'{CurrentNode.roomId}'. Revisa las conexiones en el RoomNode.");
-                return;
+                Debug.LogWarning($"[RoomGraphManager] '{target.roomId}' no esta conectado a " +
+                                 $"'{CurrentNode.roomId}'. Revisa las conexiones en el RoomNode.");
+                return false;
             }
 
+            // El fundido global tambien protege la carga Menu -> Juego.
+            if (ScreenTransition.IsBusy)
+                return false;
+
+            IsTransitioning = true;
+            SetPlayerControlEnabled(false);
+            RoomNode source = CurrentNode;
+
+            bool started = ScreenTransition.TryFadeThrough(
+                () => ApplyTravel(source, target, entryPosition),
+                CompleteTransition,
+                fadeOutDuration,
+                coveredDuration,
+                fadeInDuration);
+
+            if (started)
+                return true;
+
+            IsTransitioning = false;
+            SetPlayerControlEnabled(true);
+            return false;
+        }
+
+        private void ApplyTravel(RoomNode source, RoomNode target, Vector3? entryPosition)
+        {
             CurrentNode = target;
-            NodeChanged?.Invoke(target);
+            SnapCameraToRoom(target);
 
-            if (player == null) return;
-
-            if (entryPosition.HasValue)
+            if (player != null)
             {
-                Vector3 end = entryPosition.Value;
-                end.z = player.position.z;
-                player.position = end;
+                RoomExitPoint returnExit = FindReciprocalExit(source, target);
+                Vector3 destination;
+                if (entryPosition.HasValue)
+                {
+                    destination = entryPosition.Value;
+                    destination.z = player.position.z;
+                }
+                else if (returnExit != null
+                    && player.TryGetComponent(out Collider2D entryCollider)
+                    && returnExit.TryGetVisibleEdgeEntryPosition(
+                        source.testWorldPosition,
+                        target.testWorldPosition,
+                        entryCollider,
+                        edgeSpawnPadding,
+                        out Vector3 reciprocalEntry))
+                {
+                    destination = reciprocalEntry;
+                    destination.z = player.position.z;
+                }
+                else
+                {
+                    // Conserva el eje transversal del movimiento, pero lleva
+                    // al jugador inmediatamente al borde interior del destino.
+                    destination = player.position;
+                    Vector2 center = target.testWorldPosition;
+                    destination.x = Mathf.Clamp(
+                        destination.x,
+                        center.x - entryClampHalfExtents.x,
+                        center.x + entryClampHalfExtents.x);
+                    destination.y = Mathf.Clamp(
+                        destination.y,
+                        center.y - entryClampHalfExtents.y,
+                        center.y + entryClampHalfExtents.y);
+                }
+
+                SetPlayerPosition(destination);
+
+                if (returnExit != null && player.TryGetComponent(out Collider2D playerCollider))
+                    returnExit.ArmForArrival(playerCollider);
+            }
+
+            NodeChanged?.Invoke(target);
+        }
+
+        private RoomExitPoint FindReciprocalExit(RoomNode source, RoomNode target)
+        {
+            if (source == null || target == null || player == null)
+                return null;
+
+            RoomExitPoint[] exits = FindObjectsByType<RoomExitPoint>(FindObjectsInactive.Exclude);
+            RoomExitPoint closestReturnExit = null;
+            float closestDistance = float.PositiveInfinity;
+            Vector2 targetCenter = target.testWorldPosition;
+
+            foreach (RoomExitPoint exit in exits)
+            {
+                if (!exit.isActiveAndEnabled || exit.TargetNode != source)
+                    continue;
+
+                float distance = ((Vector2)exit.transform.position - targetCenter).sqrMagnitude;
+                if (distance >= closestDistance)
+                    continue;
+
+                closestDistance = distance;
+                closestReturnExit = exit;
+            }
+
+            if (closestReturnExit == null)
+                return null;
+
+            return closestReturnExit;
+        }
+
+        private static void SnapCameraToRoom(RoomNode room)
+        {
+            Camera gameplayCamera = Camera.main;
+            if (gameplayCamera != null
+                && gameplayCamera.TryGetComponent(out CameraRoomFollower follower))
+            {
+                follower.SnapToRoom(room);
+            }
+        }
+
+        private void CompleteTransition()
+        {
+            IsTransitioning = false;
+            SetPlayerControlEnabled(true);
+        }
+
+        private void SetPlayerControlEnabled(bool enabled)
+        {
+            if (player == null)
+                return;
+
+            if (player.TryGetComponent(out BirdPlayerController controller))
+                controller.SetMovementEnabled(enabled);
+
+            if (!enabled && player.TryGetComponent(out Rigidbody2D body))
+                body.linearVelocity = Vector2.zero;
+        }
+
+        private void CachePlayerCollider()
+        {
+            Collider2D playerCollider = null;
+            if (player != null)
+                player.TryGetComponent(out playerCollider);
+
+            PlayerCollider = playerCollider;
+        }
+
+        private void SetPlayerPosition(Vector3 position)
+        {
+            if (player == null)
+                return;
+
+            if (player.TryGetComponent(out Rigidbody2D body))
+            {
+                body.position = new Vector2(position.x, position.y);
+                body.linearVelocity = Vector2.zero;
             }
             else
             {
-                // Sin entryPoint: el jugador conserva su impulso, pero se
-                // recorta su posición al área visible de la room nueva para
-                // que no tenga que cruzar caminando el hueco entre fondos.
-                Vector3 clamped = player.position;
-                Vector2 center = target.testWorldPosition;
-                clamped.x = Mathf.Clamp(clamped.x, center.x - entryClampHalfExtents.x, center.x + entryClampHalfExtents.x);
-                clamped.y = Mathf.Clamp(clamped.y, center.y - entryClampHalfExtents.y, center.y + entryClampHalfExtents.y);
-                player.position = clamped;
+                player.position = position;
             }
+
+            Physics2D.SyncTransforms();
         }
     }
 }
