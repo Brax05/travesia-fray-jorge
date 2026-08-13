@@ -38,6 +38,7 @@ namespace TravesiaACasa.Rooms
         private void Awake()
         {
             cam = GetComponent<Camera>();
+            ColorblindFilter.EnsureCameraAttached(cam);
         }
 
         private void LateUpdate()
