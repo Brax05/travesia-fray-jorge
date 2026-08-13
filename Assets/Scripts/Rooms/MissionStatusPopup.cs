@@ -163,6 +163,14 @@ namespace TravesiaACasa.Rooms
         {
             if (statusText == null) return;
 
+            if (!MissionIntroCutscene.IsMissionAccepted)
+            {
+                statusText.text = "<b><size=30>SIN MISIÓN ACTIVA</size></b>\n\n" +
+                                  "Explora y habla con el <b>Carpinterito</b> para recibir una misión." +
+                                  "\n\n<color=#555555><size=18>(Toca cualquier parte de la pantalla para cerrar)</size></color>";
+                return;
+            }
+
             string content = "<b><size=32>MATERIALES DE LA MISIÓN</size></b>\n\n";
 
             int totalCollected = 0;
