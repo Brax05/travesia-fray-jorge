@@ -27,9 +27,29 @@ namespace TravesiaACasa.Rooms
 
         private void Start()
         {
+            AutoFindPanels();
             phase = 0;
             if (introPanel != null) introPanel.SetActive(true);
             if (controlesHints != null) controlesHints.SetActive(false);
+        }
+
+        private void AutoFindPanels()
+        {
+            if (introPanel == null)
+            {
+                Transform t = transform.Find("IntroPanel") ?? transform.Find("DialoguePanelIntro");
+                if (t == null && TopLeftGameplayHud.FindGameplayCanvas() != null)
+                    t = TopLeftGameplayHud.FindDescendant(TopLeftGameplayHud.FindGameplayCanvas().transform, "IntroPanel");
+                if (t != null) introPanel = t.gameObject;
+            }
+
+            if (controlesHints == null)
+            {
+                Transform t = transform.Find("ControlesHints");
+                if (t == null && TopLeftGameplayHud.FindGameplayCanvas() != null)
+                    t = TopLeftGameplayHud.FindDescendant(TopLeftGameplayHud.FindGameplayCanvas().transform, "ControlesHints");
+                if (t != null) controlesHints = t.gameObject;
+            }
         }
 
         private void Update()
