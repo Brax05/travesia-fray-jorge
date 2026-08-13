@@ -45,17 +45,7 @@ namespace TravesiaACasa.Rooms
             RoomNode current = RoomGraphManager.Instance != null ? RoomGraphManager.Instance.CurrentNode : null;
             if (current == null) return;
 
-            Vector3 center = current.testWorldPosition;
-            transform.position = new Vector3(center.x, center.y, transform.position.z);
-
-            // El zoom solo se recalcula al cambiar de room o de aspecto:
-            // no hace falta hacerlo cada frame.
-            if (current != lastNode || !Mathf.Approximately(cam.aspect, lastAspect))
-            {
-                lastNode = current;
-                lastAspect = cam.aspect;
-                FitToBackground(center);
-            }
+            UpdateCameraForRoom(current);
         }
 
         /// <summary>
@@ -65,22 +55,31 @@ namespace TravesiaACasa.Rooms
         /// </summary>
         public void SnapToRoom(RoomNode room)
         {
-            if (room == null)
-                return;
+            if (room == null) return;
+            UpdateCameraForRoom(room, forceRecalculate: true);
+        }
 
+        private void UpdateCameraForRoom(RoomNode room, bool forceRecalculate = false)
+        {
             if (cam == null)
                 cam = GetComponent<Camera>();
 
-            Vector3 center = room.testWorldPosition;
-            transform.position = new Vector3(center.x, center.y, transform.position.z);
-            lastNode = room;
-            lastAspect = cam.aspect;
-            FitToBackground(center);
+            Vector3 nodeCenter = room.testWorldPosition;
+            SpriteRenderer background = RoomBackgroundLocator.Find(nodeCenter, backgroundName);
+            Vector3 camPosition = background != null ? background.bounds.center : nodeCenter;
+
+            transform.position = new Vector3(camPosition.x, camPosition.y, transform.position.z);
+
+            if (forceRecalculate || room != lastNode || !Mathf.Approximately(cam.aspect, lastAspect))
+            {
+                lastNode = room;
+                lastAspect = cam.aspect;
+                FitToBackground(background);
+            }
         }
 
-        private void FitToBackground(Vector3 center)
+        private void FitToBackground(SpriteRenderer background)
         {
-            SpriteRenderer background = RoomBackgroundLocator.Find(center, backgroundName);
             if (background == null)
             {
                 cam.orthographicSize = fallbackOrthographicSize;
