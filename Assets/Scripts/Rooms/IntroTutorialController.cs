@@ -24,22 +24,49 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private GameObject controlesHints;
 
         private int phase; // 0 = intro, 1 = controles, 2 = terminado
+        private float lastAdvanceTime;
+        private const float InitialInputDelay = 0.5f; // Cooldown tras cargar la escena
+        private const float PhaseInputDelay = 0.3f;   // Cooldown entre diálogos
 
         private void Start()
         {
+            lastAdvanceTime = Time.unscaledTime + InitialInputDelay;
+            AutoFindPanels();
             phase = 0;
             if (introPanel != null) introPanel.SetActive(true);
             if (controlesHints != null) controlesHints.SetActive(false);
         }
 
+        private void AutoFindPanels()
+        {
+            if (introPanel == null)
+            {
+                Transform t = transform.Find("IntroPanel") ?? transform.Find("DialoguePanelIntro");
+                if (t == null && TopLeftGameplayHud.FindGameplayCanvas() != null)
+                    t = TopLeftGameplayHud.FindDescendant(TopLeftGameplayHud.FindGameplayCanvas().transform, "IntroPanel");
+                if (t != null) introPanel = t.gameObject;
+            }
+
+            if (controlesHints == null)
+            {
+                Transform t = transform.Find("ControlesHints");
+                if (t == null && TopLeftGameplayHud.FindGameplayCanvas() != null)
+                    t = TopLeftGameplayHud.FindDescendant(TopLeftGameplayHud.FindGameplayCanvas().transform, "ControlesHints");
+                if (t != null) controlesHints = t.gameObject;
+            }
+        }
+
         private void Update()
         {
             if (phase >= 2) return;
+            if (Time.unscaledTime < lastAdvanceTime) return;
+
             if (AdvancePressed()) Advance();
         }
 
         private void Advance()
         {
+            lastAdvanceTime = Time.unscaledTime + PhaseInputDelay;
             phase++;
             if (phase == 1)
             {
@@ -48,7 +75,9 @@ namespace TravesiaACasa.Rooms
             }
             else // paso 2: tutorial terminado
             {
+                if (introPanel != null) introPanel.SetActive(false);
                 if (controlesHints != null) controlesHints.SetActive(false);
+                gameObject.SetActive(false);
             }
         }
 

@@ -4204,6 +4204,9 @@ MonoBehaviour:
   vibracionImage: {fileID: 5914360292838131535}
   toggleOffSprite: {fileID: -4246441490244249929, guid: 3914be6a4f0a2abe48adf4404c7e1048, type: 3}
   toggleOnSprite: {fileID: 5970365866240384094, guid: e09ca1879f361468f8012acf897f6177, type: 3}
+  homeButton: {fileID: 0}
+  volverButton: {fileID: 0}
+  menuSceneName: MenuPrincipal
 --- !u!1 &5429130681186092139
 GameObject:
   m_ObjectHideFlags: 0

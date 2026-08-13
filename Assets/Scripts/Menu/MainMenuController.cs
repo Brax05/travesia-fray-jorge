@@ -15,6 +15,25 @@ namespace TravesiaACasa.Menu
 
         private GameObject[] fallbackMenuObjects;
 
+        private void Awake()
+        {
+            AutoFindSettingsPanel();
+        }
+
+        private void AutoFindSettingsPanel()
+        {
+            if (settingsPanelRoot == null)
+            {
+                Canvas canvas = FindFirstObjectByType<Canvas>();
+                if (canvas != null)
+                {
+                    Transform panelT = canvas.transform.Find("SettingsPanel");
+                    if (panelT != null)
+                        settingsPanelRoot = panelT.gameObject;
+                }
+            }
+        }
+
         public void OnPlayClicked()
         {
             ScreenTransition.TryLoadScene(gameSceneName);
@@ -22,6 +41,7 @@ namespace TravesiaACasa.Menu
 
         public void OnOpenSettingsClicked()
         {
+            AutoFindSettingsPanel();
             SetMenuContentVisible(false);
             if (settingsPanelRoot != null)
                 settingsPanelRoot.SetActive(true);
@@ -29,6 +49,7 @@ namespace TravesiaACasa.Menu
 
         public void OnCloseSettingsClicked()
         {
+            AutoFindSettingsPanel();
             if (settingsPanelRoot != null)
                 settingsPanelRoot.SetActive(false);
             SetMenuContentVisible(true);
