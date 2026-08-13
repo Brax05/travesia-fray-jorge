@@ -1,0 +1,382 @@
+fileFormatVersion: 2
+guid: 9924c275785ce4447a6a6f29a55f965e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8504026264624266988
+    second: AveNegraWalk-generated_0
+  - first:
+      213: 298443712784006047
+    second: AveNegraWalk-generated_1
+  - first:
+      213: -972836930010788068
+    second: AveNegraWalk-generated_2
+  - first:
+      213: 516538116381926426
+    second: AveNegraWalk-generated_3
+  - first:
+      213: 4332517528933746196
+    second: AveNegraWalk-generated_4
+  - first:
+      213: 1084131319582191577
+    second: AveNegraWalk-generated_5
+  - first:
+      213: 1264850318074783304
+    second: AveNegraWalk-generated_6
+  - first:
+      213: -2441494583033702499
+    second: AveNegraWalk-generated_7
+  - first:
+      213: -1120764064327519327
+    second: AveNegraWalk-generated_8
+  - first:
+      213: -5997742227913709885
+    second: AveNegraWalk-generated_9
+  - first:
+      213: -498793002060690758
+    second: AveNegraWalk-generated_10
+  - first:
+      213: 3988095468566527868
+    second: AveNegraWalk_00
+  - first:
+      213: 6512626811284013323
+    second: AveNegraWalk_01
+  - first:
+      213: -4791765519441082113
+    second: AveNegraWalk_02
+  - first:
+      213: -3309282776758433062
+    second: AveNegraWalk_03
+  - first:
+      213: -8660891081784474700
+    second: AveNegraWalk_04
+  - first:
+      213: 5707144845499512018
+    second: AveNegraWalk_05
+  - first:
+      213: 1913429007308989576
+    second: AveNegraWalk_06
+  - first:
+      213: -5490819865894784480
+    second: AveNegraWalk_07
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 27.7
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: AveNegraWalk_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 443
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.6524, y: 0.4151}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7fb046e2bf885730800000000000000
+      internalID: 3988095468566527868
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AveNegraWalk_01
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 443
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.5914, y: 0.4129}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b01c449549f716a50800000000000000
+      internalID: 6512626811284013323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AveNegraWalk_02
+      rect:
+        serializedVersion: 2
+        x: 886
+        y: 443
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.4887, y: 0.4106}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff8cfbed5aa308db0800000000000000
+      internalID: -4791765519441082113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AveNegraWalk_03
+      rect:
+        serializedVersion: 2
+        x: 1329
+        y: 443
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.3713, y: 0.4129}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adacefd09d01312d0800000000000000
+      internalID: -3309282776758433062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AveNegraWalk_04
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.6524, y: 0.5483}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b343efc2755ec780800000000000000
+      internalID: -8660891081784474700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AveNegraWalk_05
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 0
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.5914, y: 0.5438}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d433bdcff9d33f40800000000000000
+      internalID: 5707144845499512018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AveNegraWalk_06
+      rect:
+        serializedVersion: 2
+        x: 886
+        y: 0
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.4887, y: 0.5438}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 884a49b5b8ddd8a10800000000000000
+      internalID: 1913429007308989576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AveNegraWalk_07
+      rect:
+        serializedVersion: 2
+        x: 1329
+        y: 0
+        width: 443
+        height: 443
+      alignment: 9
+      pivot: {x: 0.3713, y: 0.5438}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 022feaf6c60bcc3b0800000000000000
+      internalID: -5490819865894784480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      AveNegraWalk-generated_0: 8504026264624266988
+      AveNegraWalk-generated_1: 298443712784006047
+      AveNegraWalk-generated_10: -498793002060690758
+      AveNegraWalk-generated_2: -972836930010788068
+      AveNegraWalk-generated_3: 516538116381926426
+      AveNegraWalk-generated_4: 4332517528933746196
+      AveNegraWalk-generated_5: 1084131319582191577
+      AveNegraWalk-generated_6: 1264850318074783304
+      AveNegraWalk-generated_7: -2441494583033702499
+      AveNegraWalk-generated_8: -1120764064327519327
+      AveNegraWalk-generated_9: -5997742227913709885
+      AveNegraWalk_00: 3988095468566527868
+      AveNegraWalk_01: 6512626811284013323
+      AveNegraWalk_02: -4791765519441082113
+      AveNegraWalk_03: -3309282776758433062
+      AveNegraWalk_04: -8660891081784474700
+      AveNegraWalk_05: 5707144845499512018
+      AveNegraWalk_06: 1913429007308989576
+      AveNegraWalk_07: -5490819865894784480
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

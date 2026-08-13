@@ -18,6 +18,8 @@ namespace TravesiaACasa.Rooms
     /// </summary>
     public class MissionIntroCutscene : MonoBehaviour
     {
+        private const string WalkFramesResourcePath = "Animations/AveNegraWalk-generated";
+
         [Header("Actores (en la escena)")]
         [Tooltip("GameObject del AveNegra (inactivo al inicio, hijo de Room_3).")]
         [SerializeField] private GameObject aveNegra;
@@ -29,6 +31,19 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private Vector2 walkTargetLocalPos = new Vector2(1.1f, -0.4f);
 
         [SerializeField] private float walkSpeed = 2.2f;
+
+        [Tooltip("Ciclos completos de caminata por cada unidad recorrida. Mantiene los pasos sincronizados con el avance.")]
+        [SerializeField, Min(0.1f)] private float walkCyclesPerUnit = 0.65f;
+
+        [Tooltip("Separación adicional entre el AveNegra y el borde derecho de la cámara al comenzar.")]
+        [SerializeField, Min(0f)] private float entryOffscreenMargin = 0.35f;
+
+        [Header("Reposo del AveNegra")]
+        [Tooltip("Duración de una respiración completa. Coincide con el ritmo de reposo del ave principal.")]
+        [SerializeField, Min(0.2f)] private float idleBreathCycleSeconds = 1f;
+
+        [Tooltip("Compresión vertical máxima durante la respiración. Los pies permanecen apoyados.")]
+        [SerializeField, Range(0f, 0.08f)] private float idleBreathCompression = 0.028f;
 
         [Header("Diálogo del AveNegra")]
         [SerializeField] private string speakerName = "Carpinterito";
@@ -112,21 +127,51 @@ namespace TravesiaACasa.Rooms
             SpriteRenderer aveRenderer = aveNegra.GetComponent<SpriteRenderer>();
             Transform aveTransform = aveNegra.transform;
             Vector3 target = new Vector3(walkTargetLocalPos.x, walkTargetLocalPos.y, aveTransform.localPosition.z);
+            Sprite stoppedSprite = aveRenderer != null ? aveRenderer.sprite : null;
+            Sprite[] walkFrames = Resources.LoadAll<Sprite>(WalkFramesResourcePath);
+            System.Array.Sort(walkFrames, (a, b) => string.CompareOrdinal(a.name, b.name));
 
-            // Se compara solo X: el bob de caminata mueve Y y nunca dejaría
-            // que la distancia 2D baje del umbral.
-            float baseY = walkTargetLocalPos.y;
-            while (Mathf.Abs(aveTransform.localPosition.x - target.x) > 0.05f)
+            // La posición inicial se calcula con el encuadre actual. Esto evita
+            // que aparezca dentro de la vista en pantallas especialmente anchas.
+            if (aveRenderer != null && walkFrames.Length > 0)
+                aveRenderer.sprite = walkFrames[0];
+            Vector3 start = CalculateOffscreenStart(aveTransform, aveRenderer, target);
+            aveTransform.localPosition = start;
+
+            float walkDistance = Vector3.Distance(start, target);
+            float walkDuration = walkDistance / Mathf.Max(0.01f, walkSpeed);
+            float elapsed = 0f;
+            while (elapsed < walkDuration)
             {
-                Vector3 current = aveTransform.localPosition;
-                Vector3 next = Vector3.MoveTowards(current, target, walkSpeed * Time.deltaTime);
-                // Salto corto de caminata (el sprite mira a la izquierda por defecto).
-                next.y = baseY + Mathf.Abs(Mathf.Sin(Time.time * 9f)) * 0.07f;
-                if (aveRenderer != null) aveRenderer.flipX = target.x > current.x;
-                aveTransform.localPosition = next;
+                elapsed += Time.deltaTime;
+                float linearProgress = Mathf.Clamp01(elapsed / walkDuration);
+
+                // Acelera y frena gradualmente. La posición Y solo interpola
+                // hacia el destino; ya no tiene ningún salto o seno artificial.
+                float easedProgress = Mathf.SmoothStep(0f, 1f, linearProgress);
+                aveTransform.localPosition = Vector3.LerpUnclamped(start, target, easedProgress);
+
+                if (aveRenderer != null && walkFrames.Length > 0)
+                {
+                    float distanceTravelled = walkDistance * easedProgress;
+                    int frame = Mathf.FloorToInt(
+                        distanceTravelled * walkCyclesPerUnit * walkFrames.Length) % walkFrames.Length;
+                    aveRenderer.sprite = walkFrames[frame];
+                }
+
+                if (aveRenderer != null) aveRenderer.flipX = target.x > start.x;
                 yield return null;
             }
             aveTransform.localPosition = target;
+            if (aveRenderer != null)
+            {
+                // Al detenerse vuelve a la pose original: ambas patas quedan
+                // apoyadas, en vez de congelar un cuadro intermedio del paso.
+                aveRenderer.sprite = stoppedSprite != null
+                    ? stoppedSprite
+                    : (walkFrames.Length > 0 ? walkFrames[0] : null);
+                aveRenderer = BeginIdleBreathing(aveRenderer);
+            }
 
             yield return new WaitForSeconds(0.3f);
 
@@ -180,6 +225,51 @@ namespace TravesiaACasa.Rooms
             }
             if (pickupsRemaining > 0)
                 MaterialPickup.Collected += OnMaterialCollected;
+        }
+
+        private Vector3 CalculateOffscreenStart(
+            Transform aveTransform,
+            SpriteRenderer aveRenderer,
+            Vector3 targetLocalPosition)
+        {
+            Camera gameplayCamera = Camera.main;
+            if (gameplayCamera == null || !gameplayCamera.isActiveAndEnabled)
+                return aveTransform.localPosition;
+
+            Transform parent = aveTransform.parent;
+            Vector3 targetWorld = parent != null
+                ? parent.TransformPoint(targetLocalPosition)
+                : targetLocalPosition;
+
+            // Conserva la misma altura del destino y obtiene el punto exacto
+            // donde esa línea cruza el borde derecho del viewport.
+            Vector3 edgeViewport = gameplayCamera.WorldToViewportPoint(targetWorld);
+            edgeViewport.x = 1f;
+            Vector3 rightEdgeWorld = gameplayCamera.ViewportToWorldPoint(edgeViewport);
+
+            float halfWidth = aveRenderer != null ? aveRenderer.bounds.extents.x : 0f;
+            Vector3 startWorld = rightEdgeWorld
+                + gameplayCamera.transform.right * (halfWidth + entryOffscreenMargin);
+
+            return parent != null
+                ? parent.InverseTransformPoint(startWorld)
+                : startWorld;
+        }
+
+        /// <summary>
+        /// Separa la imagen del AveNegra de su objeto raíz antes de animarla.
+        /// Así la respiración no escala ni desplaza la burbuja de idea, que
+        /// también es hija del AveNegra.
+        /// </summary>
+        private SpriteRenderer BeginIdleBreathing(SpriteRenderer source)
+        {
+            if (source == null)
+                return source;
+
+            GroundedSpriteBreathing breathing = source.GetComponent<GroundedSpriteBreathing>();
+            if (breathing == null)
+                breathing = source.gameObject.AddComponent<GroundedSpriteBreathing>();
+            return breathing.Begin(source, idleBreathCycleSeconds, idleBreathCompression);
         }
 
         private void OnMaterialCollected(MaterialPickup pickup)
