@@ -31,12 +31,37 @@ namespace TravesiaACasa.Menu
         private void Awake()
         {
             EnsureMaterial();
+            EnsureCanvasesUseCamera();
+        }
+
+        private void Start()
+        {
+            EnsureCanvasesUseCamera();
         }
 
         private void OnEnable()
         {
+            EnsureCanvasesUseCamera();
             if (SettingsManager.Instance != null)
                 SettingsManager.Instance.Changed += OnSettingsChanged;
+        }
+
+        public void EnsureCanvasesUseCamera()
+        {
+            Camera cameraToUse = GetComponent<Camera>();
+            if (cameraToUse == null) cameraToUse = Camera.main;
+            if (cameraToUse == null) return;
+
+            Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+            foreach (Canvas canvas in canvases)
+            {
+                if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
+                {
+                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    canvas.worldCamera = cameraToUse;
+                    canvas.planeDistance = 1f;
+                }
+            }
         }
 
         private void OnDisable()
