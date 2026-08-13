@@ -70,6 +70,11 @@ namespace TravesiaACasa.Rooms
             Instance = this;
         }
 
+        private void OnEnable()
+        {
+            BindMisionLetreroButton();
+        }
+
         private void Start()
         {
             BuildPopupUI();
@@ -84,6 +89,9 @@ namespace TravesiaACasa.Rooms
             Transform letreroT = TopLeftGameplayHud.FindDescendant(canvas.transform, "MisionLetrero");
             if (letreroT != null)
             {
+                Image img = letreroT.GetComponent<Image>();
+                if (img != null) img.raycastTarget = true;
+
                 Button btn = letreroT.GetComponent<Button>();
                 if (btn == null) btn = letreroT.gameObject.AddComponent<Button>();
 
