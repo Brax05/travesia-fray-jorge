@@ -26,7 +26,7 @@ namespace TravesiaACasa.Rooms
                  "rectangulo (medio ancho/alto) alrededor del centro de la room destino.")]
         [SerializeField] private Vector2 entryClampHalfExtents = new Vector2(8.6f, 3.6f);
         [Tooltip("Separacion visual entre el sprite del jugador y el borde al aparecer.")]
-        [SerializeField, Min(0f)] private float edgeSpawnPadding = 0.25f;
+        [SerializeField, Min(0f)] private float edgeSpawnPadding = 0.85f;
 
         [Header("Transicion visual")]
         [SerializeField, Min(0f)] private float fadeOutDuration = 0.07f;
