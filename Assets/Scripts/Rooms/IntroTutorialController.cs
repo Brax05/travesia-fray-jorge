@@ -75,7 +75,9 @@ namespace TravesiaACasa.Rooms
             }
             else // paso 2: tutorial terminado
             {
+                if (introPanel != null) introPanel.SetActive(false);
                 if (controlesHints != null) controlesHints.SetActive(false);
+                gameObject.SetActive(false);
             }
         }
 
