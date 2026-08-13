@@ -22,6 +22,7 @@ namespace TravesiaACasa.Rooms
         private Text noMissionText;
         private GameObject rowsContainer;
         private readonly List<ItemRowUI> itemRows = new List<ItemRowUI>();
+        private MissionIntroCutscene missionIntro;
 
         private bool isShowing;
         private float openTime;
@@ -91,6 +92,7 @@ namespace TravesiaACasa.Rooms
 
         private void Start()
         {
+            missionIntro = FindAnyObjectByType<MissionIntroCutscene>();
             BuildPopupUI();
             BindMisionLetreroButton();
         }
@@ -108,6 +110,7 @@ namespace TravesiaACasa.Rooms
 
                 Button btn = letreroT.GetComponent<Button>();
                 if (btn == null) btn = letreroT.gameObject.AddComponent<Button>();
+                if (btn.targetGraphic == null) btn.targetGraphic = img;
 
                 btn.onClick.RemoveListener(TogglePopup);
                 btn.onClick.AddListener(TogglePopup);
@@ -322,7 +325,7 @@ namespace TravesiaACasa.Rooms
                 iconImg.preserveAspect = true;
                 iconImg.raycastTarget = false;
 
-                Sprite itemSprite = LoadSprite(req.spritePath);
+                Sprite itemSprite = LoadSprite(req);
                 if (itemSprite != null)
                 {
                     iconImg.sprite = itemSprite;
@@ -379,10 +382,19 @@ namespace TravesiaACasa.Rooms
             popupPanel.SetActive(false);
         }
 
-        private static Sprite LoadSprite(string path)
+        private Sprite LoadSprite(MaterialRequirement requirement)
         {
+            if (missionIntro == null)
+                missionIntro = FindAnyObjectByType<MissionIntroCutscene>();
+
+            Sprite serializedSprite = missionIntro != null
+                ? missionIntro.GetMaterialSprite(requirement.key)
+                : null;
+            if (serializedSprite != null)
+                return serializedSprite;
+
 #if UNITY_EDITOR
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            return UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(requirement.spritePath);
 #else
             return null;
 #endif

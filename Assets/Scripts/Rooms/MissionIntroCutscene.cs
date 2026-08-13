@@ -89,6 +89,23 @@ namespace TravesiaACasa.Rooms
         private bool played;
         private int pickupsRemaining;
 
+        public Sprite GetMaterialSprite(string key)
+        {
+            switch (key)
+            {
+                case "madera_maiten":
+                    return maderaSprite;
+                case "pegamento_larvas":
+                    return pegamentoSprite;
+                case "copihue":
+                    return copihueSprite;
+                case "pluma_alicanto":
+                    return plumasSprite;
+                default:
+                    return null;
+            }
+        }
+
         private void Start()
         {
             missionBird = GetComponent<MissionBird>();
