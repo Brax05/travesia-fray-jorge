@@ -21,7 +21,7 @@ namespace TravesiaACasa.Rooms
         private float openTime;
         private const float InputCooldown = 0.25f;
 
-        [System.Serializableforward]
+        [System.Serializable]
         public class MaterialRequirement
         {
             public string key;
