@@ -3384,7 +3384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TravesiaACasa.Menu.MainMenuController
   gameSceneName: Juego
-  settingsPanelRoot: {fileID: 0}
+  settingsPanelRoot: {fileID: 1290396441}
   menuContentRoot: {fileID: 793066911}
 --- !u!4 &1641170453
 Transform:
