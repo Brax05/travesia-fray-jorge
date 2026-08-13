@@ -41,6 +41,7 @@ namespace TravesiaACasa.Rooms
 #endif
             TopLeftGameplayHud.Ensure(topLeftAvatarSprite, topLeftHealthBarSprite, topLeftHeartSprite, topLeftMissionSprite);
             InitializeMuteVisual();
+            MissionStatusPopup.EnsureInstance();
         }
 
 #if UNITY_EDITOR
