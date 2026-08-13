@@ -13,6 +13,10 @@ namespace TravesiaACasa.Menu
     /// </summary>
     public class SettingsPanelController : MonoBehaviour
     {
+        public const float MenuButtonWidth = 320f;
+        public const float MenuButtonRightInset = 70f;
+        public const float MenuButtonBottomInset = 40f;
+
         [Header("Sliders (Sonido + Brillo)")]
         [SerializeField] private Slider ambienteSlider;
         [SerializeField] private Slider personajesSlider;
@@ -30,9 +34,14 @@ namespace TravesiaACasa.Menu
         [SerializeField] private Sprite toggleOnSprite;  // boton naranjo
 
         [Header("Navegación")]
+        [SerializeField] private Sprite menuButtonSprite;
         [SerializeField] private Button homeButton;
         [SerializeField] private Button volverButton;
         [SerializeField] private string menuSceneName = "MenuPrincipal";
+
+        private const string MenuButtonLabel = "Volver al men\u00fa";
+        private const string MenuButtonAssetPath = "Assets/Arte/juego/volvermenu.png";
+        private static readonly Color32 MenuButtonColor = new Color32(255, 126, 38, 255);
 
         private SettingsManager settings;
 
@@ -41,7 +50,7 @@ namespace TravesiaACasa.Menu
             settings = SettingsManager.Instance;
 
             AutoFindButtons();
-            EnsureHomeButtonAtRuntime();
+            EnsureMenuButtonAtRuntime();
 
             if (homeButton != null)
                 homeButton.onClick.AddListener(OnHomeClicked);
@@ -139,64 +148,137 @@ namespace TravesiaACasa.Menu
             }
         }
 
-        private void EnsureHomeButtonAtRuntime()
+        private void EnsureMenuButtonAtRuntime()
         {
-            Sprite casaSprite = null;
-#if UNITY_EDITOR
-            casaSprite = UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Arte/configuracion/icono_casa.png");
-#endif
+            Transform rootT = transform.parent != null ? transform.parent : transform;
+            Transform panelT = rootT.Find("PanelCafe") ?? rootT;
+
+            menuButtonSprite = ResolveMenuButtonSprite();
 
             if (homeButton == null)
             {
-                Transform rootT = transform.parent != null ? transform.parent : transform;
-                Transform panelT = rootT.Find("PanelCafe") ?? rootT;
-
                 GameObject homeGO = new GameObject("BotonHome", typeof(RectTransform), typeof(Image), typeof(Button));
                 homeGO.transform.SetParent(panelT, false);
 
-                RectTransform homeRt = homeGO.GetComponent<RectTransform>();
-                homeRt.anchorMin = new Vector2(0.5f, 0.10f);
-                homeRt.anchorMax = new Vector2(0.5f, 0.10f);
-                homeRt.pivot = new Vector2(0.5f, 0.5f);
-                homeRt.anchoredPosition = Vector2.zero;
-                homeRt.sizeDelta = new Vector2(110f, 95f);
-
                 Image img = homeGO.GetComponent<Image>();
-                if (toggleOnSprite != null)
-                    img.sprite = toggleOnSprite;
-                img.preserveAspect = true;
+                img.sprite = menuButtonSprite;
+                img.color = menuButtonSprite != null ? Color.white : MenuButtonColor;
 
                 homeButton = homeGO.GetComponent<Button>();
                 homeButton.targetGraphic = img;
             }
 
-            if (homeButton != null)
+            if (homeButton == null)
+                return;
+
+            Transform homeT = homeButton.transform;
+            if (homeT.parent != panelT)
+                homeT.SetParent(panelT, false);
+
+            RectTransform homeRt = homeButton.GetComponent<RectTransform>();
+            homeRt.anchorMin = new Vector2(1f, 0f);
+            homeRt.anchorMax = new Vector2(1f, 0f);
+            homeRt.pivot = new Vector2(1f, 0f);
+            homeRt.anchoredPosition = new Vector2(-MenuButtonRightInset, MenuButtonBottomInset);
+            homeRt.sizeDelta = menuButtonSprite != null
+                ? SizeForWidth(menuButtonSprite, MenuButtonWidth)
+                : new Vector2(340f, 82f);
+
+            Image background = homeButton.GetComponent<Image>();
+            if (background != null)
             {
-                Transform homeT = homeButton.transform;
-                Transform textChild = homeT.Find("TextHome");
-
-                if (casaSprite != null && homeT.Find("IconoCasa") == null)
-                {
-                    GameObject iconGO = new GameObject("IconoCasa", typeof(RectTransform), typeof(Image));
-                    iconGO.transform.SetParent(homeT, false);
-                    RectTransform iconRt = iconGO.GetComponent<RectTransform>();
-                    iconRt.anchorMin = new Vector2(0.5f, 0.5f);
-                    iconRt.anchorMax = new Vector2(0.5f, 0.5f);
-                    iconRt.pivot = new Vector2(0.5f, 0.5f);
-                    iconRt.anchoredPosition = Vector2.zero;
-                    iconRt.sizeDelta = new Vector2(55f, 55f);
-
-                    Image iconImg = iconGO.GetComponent<Image>();
-                    iconImg.sprite = casaSprite;
-                    iconImg.preserveAspect = true;
-                    iconImg.raycastTarget = false;
-                }
-
-                if (homeT.Find("IconoCasa") != null && textChild != null)
-                {
-                    textChild.gameObject.SetActive(false);
-                }
+                background.sprite = menuButtonSprite;
+                background.color = menuButtonSprite != null ? Color.white : MenuButtonColor;
+                background.preserveAspect = menuButtonSprite != null;
             }
+
+            Outline border = homeButton.GetComponent<Outline>();
+            if (border == null && menuButtonSprite == null)
+                border = homeButton.gameObject.AddComponent<Outline>();
+            if (border != null)
+            {
+                border.enabled = menuButtonSprite == null;
+                border.effectColor = Color.black;
+                border.effectDistance = new Vector2(5f, -5f);
+                border.useGraphicAlpha = true;
+            }
+
+            Transform iconT = homeT.Find("IconoCasa");
+            if (iconT != null)
+                iconT.gameObject.SetActive(false);
+
+            Transform textT = homeT.Find("TextHome");
+            if (menuButtonSprite != null)
+            {
+                if (textT != null)
+                    textT.gameObject.SetActive(false);
+                return;
+            }
+
+            Text label;
+            if (textT == null)
+            {
+                GameObject textGO = new GameObject("TextHome", typeof(RectTransform), typeof(Text));
+                textGO.transform.SetParent(homeT, false);
+                label = textGO.GetComponent<Text>();
+            }
+            else
+            {
+                textT.gameObject.SetActive(true);
+                label = textT.GetComponent<Text>();
+                if (label == null)
+                    label = textT.gameObject.AddComponent<Text>();
+            }
+
+            RectTransform labelRt = label.rectTransform;
+            labelRt.anchorMin = Vector2.zero;
+            labelRt.anchorMax = Vector2.one;
+            labelRt.offsetMin = new Vector2(18f, 8f);
+            labelRt.offsetMax = new Vector2(-18f, -8f);
+            label.text = MenuButtonLabel;
+            label.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            label.fontStyle = FontStyle.Bold;
+            label.fontSize = 34;
+            label.alignment = TextAnchor.MiddleCenter;
+            label.color = Color.white;
+            label.raycastTarget = false;
+
+            Outline outline = label.GetComponent<Outline>();
+            if (outline != null)
+                outline.enabled = false;
+        }
+
+        private Sprite ResolveMenuButtonSprite()
+        {
+#if UNITY_EDITOR
+            // Fuerza el arte original también cuando Unity conserva en memoria
+            // una versión antigua de MenuPrincipal con el botón cuadrado.
+            foreach (Object asset in UnityEditor.AssetDatabase.LoadAllAssetsAtPath(MenuButtonAssetPath))
+            {
+                if (asset is Sprite sprite)
+                    return sprite;
+            }
+#endif
+
+            if (menuButtonSprite != null)
+                return menuButtonSprite;
+
+            if (homeButton != null && homeButton.TryGetComponent(out Image existingImage))
+            {
+                Sprite existingSprite = existingImage.sprite;
+                if (existingSprite != toggleOnSprite && existingSprite != toggleOffSprite)
+                    return existingSprite;
+            }
+
+            return null;
+        }
+
+        private static Vector2 SizeForWidth(Sprite sprite, float width)
+        {
+            if (sprite == null || sprite.rect.height <= 0f)
+                return new Vector2(width, 100f);
+
+            return new Vector2(width, width * sprite.rect.height / sprite.rect.width);
         }
 
         private void OnAmbienteChanged(float v) => settings.AmbienteVolume = v;

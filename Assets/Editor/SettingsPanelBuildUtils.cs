@@ -32,6 +32,7 @@ namespace TravesiaACasa.Menu.Editor
         private const string BirdIconPath = ArtRoot + "/configuracion/slider_separado/ave_icono.png";
         private const string PinkFlowerIconPath = ArtRoot + "/configuracion/slider_separado/flor_rosada.png";
         private const string YellowFlowerIconPath = ArtRoot + "/configuracion/slider_separado/flor_amarilla.png";
+        private const string MenuButtonPath = ArtRoot + "/juego/volvermenu.png";
 
         private static readonly Vector2 SonidoTitleAnchor = new Vector2(LeftLabelX, 0.84f);
         private static readonly Vector2 OpcionesTitleAnchor = new Vector2(RightLabelX, 0.84f);
@@ -105,26 +106,14 @@ namespace TravesiaACasa.Menu.Editor
             RectTransform volverRt = volverBtn.GetComponent<RectTransform>();
             PlaceUI(volverRt, VolverAnchor, Center, Vector2.zero, SizeFromSprite(volverSprite, 110f));
 
-            // Botón Home (centrado abajo en el panel café para regresar al menú de inicio)
-            Sprite casaSprite = LoadSprite($"{ArtRoot}/configuracion/icono_casa.png");
-            Button homeBtn = CreateButton(panelT, "BotonHome", onSprite);
+            // Botón para regresar al menú principal usando el arte entregado.
+            Sprite menuButtonSprite = RequireSprite(MenuButtonPath);
+            Button homeBtn = CreateButton(panelT, "BotonHome", menuButtonSprite);
             RectTransform homeRt = homeBtn.GetComponent<RectTransform>();
-            PlaceUI(homeRt, new Vector2(0.5f, 0.10f), Center, Vector2.zero, new Vector2(110f, 95f));
-
-            if (casaSprite != null)
-            {
-                Image casaImg = CreateImage(homeRt, "IconoCasa", casaSprite);
-                PlaceUI(casaImg.rectTransform, Center, Center, Vector2.zero, new Vector2(55f, 55f));
-            }
-            else
-            {
-                Text homeLabel = CreateLabel(homeRt, "TextHome", "HOME", 38, TextAnchor.MiddleCenter);
-                StretchFull(homeLabel.rectTransform);
-                homeLabel.color = Color.white;
-                Outline homeOutline = homeLabel.gameObject.AddComponent<Outline>();
-                homeOutline.effectColor = new Color(0.2f, 0.12f, 0.05f, 1f);
-                homeOutline.effectDistance = new Vector2(2.5f, -2.5f);
-            }
+            PlaceUI(homeRt, new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(-SettingsPanelController.MenuButtonRightInset, SettingsPanelController.MenuButtonBottomInset), SizeFromSprite(menuButtonSprite, SettingsPanelController.MenuButtonWidth));
+            Image homeBackground = homeBtn.GetComponent<Image>();
+            homeBackground.color = Color.white;
+            homeBackground.preserveAspect = true;
 
             GameObject spcGO = new GameObject("SettingsPanelController");
             spcGO.transform.SetParent(root.transform, false);
@@ -139,6 +128,7 @@ namespace TravesiaACasa.Menu.Editor
             SetPrivateField(spc, "vibracionImage", vibracionImg);
             SetPrivateField(spc, "toggleOffSprite", offSprite);
             SetPrivateField(spc, "toggleOnSprite", onSprite);
+            SetPrivateField(spc, "menuButtonSprite", menuButtonSprite);
             SetPrivateField(spc, "homeButton", homeBtn);
             SetPrivateField(spc, "volverButton", volverBtn);
 

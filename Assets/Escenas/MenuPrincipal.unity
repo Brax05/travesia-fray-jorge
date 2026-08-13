@@ -2180,7 +2180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5970365866240384094, guid: e09ca1879f361468f8012acf897f6177, type: 3}
+  m_Sprite: {fileID: -8790501981709839696, guid: 95c90ff329e5b4d4a886b5535795791f, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -2213,11 +2213,11 @@ RectTransform:
   - {fileID: 120726057}
   m_Father: {fileID: 1837676096}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.1}
-  m_AnchorMax: {x: 0.5, y: 0.1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 250, y: 75}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: -70, y: 40}
+  m_SizeDelta: {x: 320, y: 85.64836}
+  m_Pivot: {x: 1, y: 0}
 --- !u!1 &1004780405
 GameObject:
   m_ObjectHideFlags: 0
@@ -4153,6 +4153,7 @@ MonoBehaviour:
   vibracionImage: {fileID: 1306428016}
   toggleOffSprite: {fileID: -4246441490244249929, guid: 3914be6a4f0a2abe48adf4404c7e1048, type: 3}
   toggleOnSprite: {fileID: 5970365866240384094, guid: e09ca1879f361468f8012acf897f6177, type: 3}
+  menuButtonSprite: {fileID: -8790501981709839696, guid: 95c90ff329e5b4d4a886b5535795791f, type: 3}
   homeButton: {fileID: 962725799}
   menuSceneName: MenuPrincipal
 --- !u!1 &2062281598
