@@ -30,12 +30,19 @@ namespace TravesiaACasa.Rooms
         private SpriteRenderer spriteRenderer;
         private Vector2 input;     // teclado + HUD ya combinados (se recalcula en Update)
         private Vector2 hudInput;  // suma de los HudMoveButton actualmente presionados
+        private uint hudInputRevision;
         private bool movementEnabled = true;
 
         /// <summary>Direccion que el jugador esta intentando mover ahora.</summary>
         public Vector2 MovementInput => movementEnabled ? input : Vector2.zero;
 
         public bool MovementEnabled => movementEnabled;
+
+        /// <summary>
+        /// Cambia cada vez que una transicion cancela los toques activos del HUD.
+        /// Permite ignorar PointerUp/Exit tardios provenientes del toque anterior.
+        /// </summary>
+        public uint HudInputRevision => hudInputRevision;
 
         private void Awake()
         {
@@ -93,7 +100,7 @@ namespace TravesiaACasa.Rooms
             input = Vector2.zero;
 
             if (!enabled)
-                hudInput = Vector2.zero;
+                CancelHudInput();
 
             if (rb != null)
                 rb.linearVelocity = Vector2.zero;
@@ -102,16 +109,38 @@ namespace TravesiaACasa.Rooms
         private void OnDisable()
         {
             input = Vector2.zero;
-            hudInput = Vector2.zero;
+            CancelHudInput();
             if (rb != null)
                 rb.linearVelocity = Vector2.zero;
         }
 
-        /// <summary>Un botón del D-pad empezó a presionarse (HudMoveButton).</summary>
-        public void AddHudDirection(Vector2 direction) => hudInput += direction;
+        private void CancelHudInput()
+        {
+            hudInput = Vector2.zero;
+            unchecked
+            {
+                hudInputRevision++;
+            }
+        }
 
-        /// <summary>Un botón del D-pad se soltó (HudMoveButton).</summary>
-        public void RemoveHudDirection(Vector2 direction) => hudInput -= direction;
+        /// <summary>Un boton del D-pad empezo a presionarse (HudMoveButton).</summary>
+        public uint AddHudDirection(Vector2 direction)
+        {
+            if (movementEnabled)
+                hudInput += direction;
+
+            return hudInputRevision;
+        }
+
+        /// <summary>
+        /// Un boton del D-pad se solto. Si el toque pertenece a una revision
+        /// anterior, la transicion ya lo cancelo y no se debe restar otra vez.
+        /// </summary>
+        public void RemoveHudDirection(Vector2 direction, uint inputRevision)
+        {
+            if (inputRevision == hudInputRevision)
+                hudInput -= direction;
+        }
 
         /// <summary>Fija de golpe el input del HUD (ej. un joystick virtual futuro).</summary>
         public void SetInput(Vector2 direction) => hudInput = direction;
