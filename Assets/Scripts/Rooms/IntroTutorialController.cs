@@ -24,9 +24,13 @@ namespace TravesiaACasa.Rooms
         [SerializeField] private GameObject controlesHints;
 
         private int phase; // 0 = intro, 1 = controles, 2 = terminado
+        private float lastAdvanceTime;
+        private const float InitialInputDelay = 0.5f; // Cooldown tras cargar la escena
+        private const float PhaseInputDelay = 0.3f;   // Cooldown entre diálogos
 
         private void Start()
         {
+            lastAdvanceTime = Time.unscaledTime + InitialInputDelay;
             AutoFindPanels();
             phase = 0;
             if (introPanel != null) introPanel.SetActive(true);
@@ -55,11 +59,14 @@ namespace TravesiaACasa.Rooms
         private void Update()
         {
             if (phase >= 2) return;
+            if (Time.unscaledTime < lastAdvanceTime) return;
+
             if (AdvancePressed()) Advance();
         }
 
         private void Advance()
         {
+            lastAdvanceTime = Time.unscaledTime + PhaseInputDelay;
             phase++;
             if (phase == 1)
             {
