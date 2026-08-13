@@ -59,7 +59,13 @@ namespace TravesiaACasa.Menu
                 {
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
                     canvas.worldCamera = cameraToUse;
-                    canvas.planeDistance = 1f;
+                }
+
+                if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
+                {
+                    canvas.planeDistance = cameraToUse.nearClipPlane + 0.05f;
+                    if (canvas.sortingOrder < 100)
+                        canvas.sortingOrder = 100;
                 }
             }
         }
