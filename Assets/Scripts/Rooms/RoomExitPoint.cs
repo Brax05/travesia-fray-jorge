@@ -160,7 +160,6 @@ namespace TravesiaACasa.Rooms
 
             if (manager.IsTransitioning) return;
             if (!PlayerIsMovingTowardTarget(trackedPlayer, manager)) return;
-            if (!IsWithinExitTriggerSpan(trackedPlayer, manager)) return;
             if (!HasReachedVisibleRoomEdge(trackedPlayer, manager)) return;
 
             bool started = manager.TravelTo(
