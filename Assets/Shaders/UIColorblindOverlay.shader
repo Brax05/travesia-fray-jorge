@@ -43,7 +43,7 @@ Shader "UI/ColorblindOverlay"
             {
                 float4 vertex   : SV_POSITION;
                 fixed4 color    : COLOR;
-                float2 grabPos  : TEXCOORD0;
+                float4 grabPos  : TEXCOORD0;
             };
 
             v2f vert(appdata_t IN)
