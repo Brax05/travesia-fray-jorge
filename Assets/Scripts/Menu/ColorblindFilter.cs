@@ -1,121 +1,87 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace TravesiaACasa.Menu
 {
     /// <summary>
     /// Filtro global de pantalla completa para el Modo Daltónico.
-    /// Se conecta automáticamente con SettingsManager.Instance.ModoDaltonico.
-    /// Aplica una matriz de transformación de color optimizada para diferenciar
-    /// rojos y verdes mediante corrección cromática y contraste asistido.
+    /// Se conecta dinámicamente con SettingsManager.Instance.ModoDaltonico.
+    /// Mantiene el HUD en ScreenSpaceOverlay (siempre al frente de todo) y
+    /// aplica la corrección cromática a toda la pantalla mediante un overlay.
     /// </summary>
-    [RequireComponent(typeof(Camera))]
     public class ColorblindFilter : MonoBehaviour
     {
-        private static Shader filterShader;
-        private Material filterMaterial;
+        private static Material overlayMaterial;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        private static void AutoAttachToCamera()
+        private static void AutoInit()
         {
-            EnsureCameraAttached(Camera.main);
+            EnsureOverlayInScene();
         }
 
         public static void EnsureCameraAttached(Camera targetCamera)
         {
-            if (targetCamera != null && targetCamera.GetComponent<ColorblindFilter>() == null)
-            {
-                targetCamera.gameObject.AddComponent<ColorblindFilter>();
-            }
-        }
-
-        private void Awake()
-        {
-            EnsureMaterial();
-            EnsureCanvasesUseCamera();
-        }
-
-        private void Start()
-        {
-            EnsureCanvasesUseCamera();
+            EnsureOverlayInScene();
         }
 
         private void OnEnable()
         {
-            EnsureCanvasesUseCamera();
             if (SettingsManager.Instance != null)
-                SettingsManager.Instance.Changed += OnSettingsChanged;
-        }
-
-        public void EnsureCanvasesUseCamera()
-        {
-            Camera cameraToUse = GetComponent<Camera>();
-            if (cameraToUse == null) cameraToUse = Camera.main;
-            if (cameraToUse == null) return;
-
-            Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsSortMode.None);
-            foreach (Canvas canvas in canvases)
-            {
-                if (canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-                {
-                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
-                    canvas.worldCamera = cameraToUse;
-                }
-
-                if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
-                {
-                    canvas.planeDistance = cameraToUse.nearClipPlane + 0.05f;
-                    if (canvas.sortingOrder < 100)
-                        canvas.sortingOrder = 100;
-                }
-            }
+                SettingsManager.Instance.Changed += Apply;
+            Apply();
         }
 
         private void OnDisable()
         {
             if (SettingsManager.Instance != null)
-                SettingsManager.Instance.Changed -= OnSettingsChanged;
+                SettingsManager.Instance.Changed -= Apply;
         }
 
-        private void OnSettingsChanged()
+        public static void EnsureOverlayInScene()
         {
-            // El estado se evalúa dinámicamente en OnRenderImage
-        }
+            Canvas canvas = Object.FindFirstObjectByType<Canvas>();
+            if (canvas == null) return;
 
-        private void EnsureMaterial()
-        {
-            if (filterMaterial != null) return;
+            Transform overlayT = canvas.transform.Find("ColorblindUIOverlay");
+            GameObject overlayGO;
 
-            if (filterShader == null)
-                filterShader = Shader.Find("Hidden/ColorblindFilter");
-
-            if (filterShader != null && filterShader.isSupported)
+            if (overlayT == null)
             {
-                filterMaterial = new Material(filterShader);
-            }
-        }
+                overlayGO = new GameObject("ColorblindUIOverlay", typeof(RectTransform), typeof(Image));
+                overlayGO.transform.SetParent(canvas.transform, false);
 
-        private void OnRenderImage(RenderTexture source, RenderTexture destination)
-        {
-            bool active = SettingsManager.Instance != null && SettingsManager.Instance.ModoDaltonico;
+                RectTransform rt = overlayGO.GetComponent<RectTransform>();
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
 
-            EnsureMaterial();
+                Image img = overlayGO.GetComponent<Image>();
+                img.raycastTarget = false;
+                img.color = Color.white;
 
-            if (active && filterMaterial != null)
-            {
-                Graphics.Blit(source, destination, filterMaterial);
+                if (overlayMaterial == null)
+                {
+                    Shader shader = Shader.Find("UI/ColorblindOverlay");
+                    if (shader != null && shader.isSupported)
+                        overlayMaterial = new Material(shader);
+                }
+
+                if (overlayMaterial != null)
+                    img.material = overlayMaterial;
             }
             else
             {
-                Graphics.Blit(source, destination);
+                overlayGO = overlayT.gameObject;
             }
+
+            bool active = SettingsManager.Instance != null && SettingsManager.Instance.ModoDaltonico;
+            overlayGO.SetActive(active);
         }
 
-        private void OnDestroy()
+        public void Apply()
         {
-            if (filterMaterial != null)
-            {
-                DestroyImmediate(filterMaterial);
-            }
+            EnsureOverlayInScene();
         }
     }
 }
