@@ -139,6 +139,12 @@ namespace TravesiaACasa.Rooms
 
         public void OnCloseSettingsClicked() => SetSettingsOpen(false);
 
+        public void OnHomeClicked()
+        {
+            Time.timeScale = 1f;
+            ScreenTransition.TryLoadScene("MenuPrincipal");
+        }
+
         public void ToggleSettings()
         {
             if (settingsPanelRoot == null) return;
