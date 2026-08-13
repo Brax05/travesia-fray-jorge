@@ -7,7 +7,7 @@ namespace TravesiaACasa.EditorTools
 {
     /// <summary>
     /// Herramientas de Editor para organizar capas de renderizado,
-    /// generar prefabs de decoración reutilizables y organizar la estructura de assets.
+    /// generar prefabs de decoración reutilizables y organizar la estructura de assets y jerarquía.
     /// </summary>
     public static class AssetOrganizerTools
     {
@@ -104,6 +104,10 @@ namespace TravesiaACasa.EditorTools
                     AssetDatabase.CreateFolder(parent, child);
                 }
             }
+
+            AssetDatabase.Refresh();
+            Debug.Log("[AssetOrganizerTools] Estructura de carpetas verificada y creada correctamente.");
+        }
 
         [MenuItem("Game/Organización/4. Organizar Jerarquía de la Escena (Hierarchy)", false, 4)]
         public static void OrganizeSceneHierarchy()
