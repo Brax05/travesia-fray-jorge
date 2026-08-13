@@ -165,13 +165,13 @@ namespace TravesiaACasa.Rooms
 
             if (!MissionIntroCutscene.IsMissionAccepted)
             {
-                statusText.text = "<b><size=30>SIN MISIÓN ACTIVA</size></b>\n\n" +
-                                  "Explora y habla con el <b>Carpinterito</b> para recibir una misión." +
-                                  "\n\n<color=#555555><size=18>(Toca cualquier parte de la pantalla para cerrar)</size></color>";
+                statusText.text = "<b><size=38>¡SIN MISIÓN!</size></b>\n\n" +
+                                  "<size=28>Busca al pajarito <b>Carpinterito</b>\npara recibir tu primera misión.</size>\n\n" +
+                                  "<color=#555555><size=20>(Toca la pantalla para cerrar)</size></color>";
                 return;
             }
 
-            string content = "<b><size=32>MATERIALES DE LA MISIÓN</size></b>\n\n";
+            string content = "<b><size=38>TUS MATERIALES</size></b>\n\n";
 
             int totalCollected = 0;
             int totalRequired = 0;
@@ -183,13 +183,14 @@ namespace TravesiaACasa.Rooms
                 totalRequired += req.requiredAmount;
 
                 bool completed = current >= req.requiredAmount;
-                string checkMark = completed ? "<color=#228B22>[✓] Conseguido</color>" : "<color=#D9534F>[ ] Pendiente</color>";
+                string icon = completed ? "<color=#1B8A22><b>✓</b></color>" : "<color=#D93829><b>○</b></color>";
+                string status = completed ? "<color=#1B8A22>¡Listo!</color>" : $"({current} de {req.requiredAmount})";
 
-                content += $"{checkMark}  <b>{req.name}</b> ({current}/{req.requiredAmount})\n";
+                content += $"<size=28>{icon} <b>{req.name}</b> {status}</size>\n";
             }
 
-            content += $"\n<size=22>Progreso total: {totalCollected}/{totalRequired}</size>";
-            content += "\n\n<color=#555555><size=18>(Toca cualquier parte de la pantalla para cerrar)</size></color>";
+            content += $"\n<size=26><b>Total conseguido: {totalCollected} de {totalRequired}</b></size>";
+            content += "\n\n<color=#555555><size=20>(Toca la pantalla para cerrar)</size></color>";
 
             statusText.text = content;
         }
@@ -216,15 +217,15 @@ namespace TravesiaACasa.Rooms
             rt.anchorMin = new Vector2(0.5f, 0.5f);
             rt.anchorMax = new Vector2(0.5f, 0.5f);
             rt.pivot = new Vector2(0.5f, 0.5f);
-            rt.sizeDelta = new Vector2(640f, 400f);
+            rt.sizeDelta = new Vector2(780f, 520f);
             rt.anchoredPosition = Vector2.zero;
 
             Image bg = popupPanel.GetComponent<Image>();
-            bg.color = new Color(0.96f, 0.93f, 0.84f, 0.97f);
+            bg.color = new Color(0.96f, 0.93f, 0.84f, 0.98f);
 
             Outline bgOutline = popupPanel.AddComponent<Outline>();
-            bgOutline.effectColor = new Color(0.35f, 0.22f, 0.12f, 0.9f);
-            bgOutline.effectDistance = new Vector2(4f, -4f);
+            bgOutline.effectColor = new Color(0.35f, 0.22f, 0.12f, 0.95f);
+            bgOutline.effectDistance = new Vector2(5f, -5f);
 
             // Texto del cartel
             GameObject textGO = new GameObject("StatusText", typeof(RectTransform), typeof(Text));
@@ -233,15 +234,16 @@ namespace TravesiaACasa.Rooms
             RectTransform textRt = textGO.GetComponent<RectTransform>();
             textRt.anchorMin = Vector2.zero;
             textRt.anchorMax = Vector2.one;
-            textRt.offsetMin = new Vector2(30f, 20f);
-            textRt.offsetMax = new Vector2(-30f, -20f);
+            textRt.offsetMin = new Vector2(25f, 15f);
+            textRt.offsetMax = new Vector2(-25f, -15f);
 
             statusText = textGO.GetComponent<Text>();
-            statusText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Font.CreateDynamicFontFromOSFont("Arial", 22);
-            statusText.fontSize = 22;
+            statusText.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf") ?? Font.CreateDynamicFontFromOSFont("Arial", 28);
+            statusText.fontSize = 28;
             statusText.alignment = TextAnchor.MiddleCenter;
-            statusText.color = new Color(0.2f, 0.15f, 0.1f, 1f);
+            statusText.color = new Color(0.18f, 0.12f, 0.08f, 1f);
             statusText.supportRichText = true;
+            statusText.raycastTarget = false;
 
             popupPanel.SetActive(false);
         }
