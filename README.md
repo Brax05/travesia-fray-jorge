@@ -54,9 +54,6 @@ carpinterito le explique qué puede comer y qué no: no todas las aves
 tienen la misma alimentación, y hay elementos contaminantes (basura de
 humanos) que son nocivos para ellas.
 
-> Contenido curricular: alimentación de los seres vivos y clasificación
-> de los animales según su alimentación (texto escolar, págs. 170 y 172).
-
 ## Cómo jugar
 
 - **Mover:** WASD / flechas, o el D-pad del HUD (táctil).
@@ -195,13 +192,6 @@ Assets/
 `CubePlayerController.cs` y `Direction.cs` son de la primera versión con
 grid cardinal (N/S/E/O). Solo los usa `GraphPrototype.unity`.
 
-## Utilidades de editor (menú `Game` en Unity)
-
-| Menú | Qué hace |
-|---|---|
-| `Game > Asignar animaciones del Yal` | Agrega `BirdSpriteAnimator` al Player de la escena abierta y le asigna los frames de `Arte/juego/yal_animaciones` sin arrastrar sprites a mano |
-| `BuildMenuScene` | Reconstruye la escena del menú principal con el arte de `Arte/menu` |
-| `SettingsPanelBuildUtils` | Arma el panel de configuración (sliders y botones de `Arte/configuracion`) |
 
 ## Requisitos
 
