@@ -80,6 +80,8 @@ namespace TravesiaACasa.Rooms
                  "Los coloca la tool Game/Misión/Colocar materiales de la misión.")]
         [SerializeField] private GameObject[] materialPickups;
 
+        public static bool IsMissionAccepted { get; set; } = false;
+
         private MissionBird missionBird;
         private GameHudController hud;
         private Canvas hudCanvas;
@@ -205,6 +207,7 @@ namespace TravesiaACasa.Rooms
 
             // Misión aceptada: vuelve el control y el letrero MISIÓN parpadea.
             SetHudControlsVisible(true);
+            IsMissionAccepted = true;
             if (missionBird != null)
             {
                 missionBird.SetMission(false);
