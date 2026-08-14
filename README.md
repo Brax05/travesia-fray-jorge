@@ -85,7 +85,6 @@ Las escenas incluidas en la compilación son `MenuPrincipal` y `Juego`.
 ## Documentación
 
 - [Referencia técnica en Markdown](Docs/DocumentacionTecnica.md): consulta rápida para el equipo.
-- [Documento técnico formal en LaTeX](Docs/DocumentacionTecnica.tex): entregable completo con portada, arquitectura, pruebas, riesgos y anexos.
 
 ---
 
