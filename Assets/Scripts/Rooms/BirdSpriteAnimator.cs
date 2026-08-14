@@ -1,3 +1,9 @@
+/**
+ * Archivo: BirdSpriteAnimator.cs
+ * Proposito: Animar el sprite del ave segun su estado de movimiento.
+ * Responsabilidades: Cambiar frames, elegir animaciones por direccion y mantener el SpriteRenderer sincronizado con el controlador del jugador.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

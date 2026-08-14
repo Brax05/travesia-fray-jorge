@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomData.cs
+ * Proposito: Definir datos configurables de una sala basada en ScriptableObject.
+ * Responsabilidades: Guardar prefab, vecinos, puntos de entrada y entregar la sala conectada segun una direccion.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

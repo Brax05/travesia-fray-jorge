@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomManager.cs
+ * Proposito: Administrar la transicion entre salas usando RoomData.
+ * Responsabilidades: Cargar prefabs de sala, posicionar al jugador en la entrada correspondiente y notificar el cambio de sala actual.
+ *
+ */
 using System;
 using UnityEngine;
 

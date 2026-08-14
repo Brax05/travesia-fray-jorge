@@ -1,3 +1,9 @@
+/**
+ * Archivo: SettingsManager.cs
+ * Proposito: Administrar las preferencias persistentes de configuracion del juego.
+ * Responsabilidades: Guardar volumenes, brillo, modo daltonico y vibracion en PlayerPrefs, ademas de notificar cambios globales.
+ *
+ */
 using System;
 using UnityEngine;
 

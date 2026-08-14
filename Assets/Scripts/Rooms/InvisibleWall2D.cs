@@ -1,3 +1,9 @@
+/**
+ * Archivo: InvisibleWall2D.cs
+ * Proposito: Crear limites invisibles de colision en escenas 2D.
+ * Responsabilidades: Asegurar BoxCollider2D, mantenerlo sin trigger y dibujar guias de depuracion en el editor.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

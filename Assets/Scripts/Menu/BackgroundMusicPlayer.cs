@@ -1,3 +1,9 @@
+/**
+ * Archivo: BackgroundMusicPlayer.cs
+ * Proposito: Mantener la musica de fondo del menu y aplicar el volumen configurado.
+ * Responsabilidades: Conservar una instancia persistente, sincronizar volumen con SettingsManager y liberar eventos al destruirse.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Menu

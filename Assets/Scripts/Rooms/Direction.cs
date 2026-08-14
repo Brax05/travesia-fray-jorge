@@ -1,3 +1,9 @@
+/**
+ * Archivo: Direction.cs
+ * Proposito: Definir las direcciones usadas para conectar salas y ubicar entradas.
+ * Responsabilidades: Enumerar lados de navegacion y entregar utilidades como la direccion opuesta.
+ *
+ */
 namespace TravesiaACasa.Rooms
 {
     /// <summary>

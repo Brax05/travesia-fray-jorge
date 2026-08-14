@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomEdgeTrigger.cs
+ * Proposito: Detectar cuando el jugador cruza un borde de sala.
+ * Responsabilidades: Identificar la direccion del borde, validar al jugador y solicitar la transicion al RoomManager.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

@@ -1,3 +1,9 @@
+/**
+ * Archivo: BrightnessOverlay.cs
+ * Proposito: Aplicar visualmente el nivel de brillo configurado por el usuario.
+ * Responsabilidades: Escuchar cambios de SettingsManager, ajustar la transparencia del overlay y mantener la imagen sincronizada.
+ *
+ */
 using UnityEngine;
 using UnityEngine.UI;
 

@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomTransitionUI.cs
+ * Proposito: Actualizar textos o elementos de UI cuando cambia la sala actual.
+ * Responsabilidades: Escuchar eventos del RoomGraphManager, mostrar el nombre de la sala y limpiar suscripciones al desactivarse.
+ *
+ */
 using UnityEngine;
 using UnityEngine.UI;
 

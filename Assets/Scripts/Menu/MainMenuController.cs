@@ -1,3 +1,9 @@
+/**
+ * Archivo: MainMenuController.cs
+ * Proposito: Controlar las acciones principales del menu inicial.
+ * Responsabilidades: Iniciar el juego, abrir o cerrar configuracion y alternar la visibilidad del contenido del menu.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Menu

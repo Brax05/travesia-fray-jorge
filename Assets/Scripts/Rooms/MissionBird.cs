@@ -1,3 +1,9 @@
+/**
+ * Archivo: MissionBird.cs
+ * Proposito: Controlar el ave de mision y sus dialogos con el jugador.
+ * Responsabilidades: Mostrar conversaciones, activar o completar la mision, actualizar sprites y emitir eventos al cerrar dialogo.
+ *
+ */
 using UnityEngine;
 using UnityEngine.InputSystem;
 

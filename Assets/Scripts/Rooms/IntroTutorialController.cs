@@ -1,3 +1,9 @@
+/**
+ * Archivo: IntroTutorialController.cs
+ * Proposito: Mostrar y avanzar el tutorial introductorio del juego.
+ * Responsabilidades: Encontrar paneles de tutorial, responder a entrada del usuario y cerrar la introduccion al completarse.
+ *
+ */
 using UnityEngine;
 using UnityEngine.InputSystem;
 

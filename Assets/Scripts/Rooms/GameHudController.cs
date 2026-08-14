@@ -1,3 +1,9 @@
+/**
+ * Archivo: GameHudController.cs
+ * Proposito: Controlar el HUD principal durante el juego.
+ * Responsabilidades: Gestionar botones de movimiento, interaccion, configuracion y silencio, asegurar referencias visuales y mostrar u ocultar controles de gameplay.
+ *
+ */
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;

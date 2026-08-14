@@ -1,3 +1,9 @@
+/**
+ * Archivo: ColorblindFilter.cs
+ * Proposito: Activar el filtro visual de accesibilidad para modo daltonico.
+ * Responsabilidades: Crear o asegurar el overlay en la escena, conectar el filtro a la camara y aplicar el estado guardado en configuracion.
+ *
+ */
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;

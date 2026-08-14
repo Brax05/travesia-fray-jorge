@@ -1,3 +1,9 @@
+/**
+ * Archivo: CameraRoomFollower.cs
+ * Proposito: Ajustar la camara a la sala actual y a su fondo visible.
+ * Responsabilidades: Seguir cambios de RoomNode, centrar la camara, adaptar el tamano ortografico y respetar el encuadre de cada fondo.
+ *
+ */
 using UnityEngine;
 using TravesiaACasa.Menu;
 

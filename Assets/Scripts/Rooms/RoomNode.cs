@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomNode.cs
+ * Proposito: Representar un nodo de sala dentro del grafo navegable.
+ * Responsabilidades: Guardar id, nombre, escena o fondo, conexiones y validar si otra sala esta conectada.
+ *
+ */
 using System.Collections.Generic;
 using UnityEngine;
 

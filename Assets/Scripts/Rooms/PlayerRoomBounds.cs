@@ -1,3 +1,9 @@
+/**
+ * Archivo: PlayerRoomBounds.cs
+ * Proposito: Mantener al jugador dentro de los limites validos de la sala actual.
+ * Responsabilidades: Calcular bordes disponibles, restringir posicion del Rigidbody2D y actualizar limites al cambiar de sala.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

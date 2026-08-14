@@ -1,3 +1,9 @@
+/**
+ * Archivo: SettingsPanelController.cs
+ * Proposito: Conectar el panel visual de configuracion con las preferencias del juego.
+ * Responsabilidades: Sincronizar sliders y toggles, responder botones de volver o inicio y crear controles faltantes en tiempo de ejecucion.
+ *
+ */
 using UnityEngine;
 using UnityEngine.UI;
 

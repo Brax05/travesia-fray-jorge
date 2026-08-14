@@ -1,0 +1,903 @@
+% Documentacion tecnica formal de Travesia a casa.
+% Compilar desde la raiz del repositorio:
+%   pdflatex -interaction=nonstopmode -output-directory=Docs Docs/DocumentacionTecnica.tex
+% Ejecutar el comando dos veces para actualizar indice y referencias.
+
+\documentclass[11pt,a4paper,oneside]{report}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-nodecimaldot]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm,headheight=15pt]{geometry}
+\usepackage[table]{xcolor}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tikz}
+\usepackage[most]{tcolorbox}
+\usepackage{listings}
+\usepackage{xurl}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit}
+
+% Paleta inspirada en el entorno natural y en la interfaz del juego.
+\definecolor{ForestDark}{HTML}{174C3C}
+\definecolor{Forest}{HTML}{2F6F4E}
+\definecolor{Leaf}{HTML}{73A942}
+\definecolor{AccentOrange}{HTML}{F28C28}
+\definecolor{Mist}{HTML}{F2F6F3}
+\definecolor{LineGray}{HTML}{D8E0DB}
+\definecolor{BodyText}{HTML}{26332D}
+\definecolor{MutedText}{HTML}{5E6B65}
+\definecolor{RiskHigh}{HTML}{F8D7DA}
+\definecolor{RiskMedium}{HTML}{FFF3CD}
+\definecolor{RiskLow}{HTML}{D1E7DD}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=ForestDark,
+  urlcolor=Forest,
+  citecolor=Forest,
+  pdftitle={Documentación técnica - Travesía a casa},
+  pdfauthor={Brandon Muñoz y Cristhian Montenegro},
+  pdfsubject={Arquitectura, configuración y mantenimiento del videojuego},
+  pdfkeywords={Unity, C Sharp, videojuego educativo, Fray Jorge, documentación técnica}
+}
+
+\graphicspath{{./}{Docs/}{imagenes/}{Docs/imagenes/}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\renewcommand{\arraystretch}{1.22}
+\setlist[itemize]{leftmargin=1.5em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=1.7em,itemsep=0.25em,topsep=0.35em}
+
+\titleformat{\chapter}[display]
+  {\normalfont\bfseries\color{ForestDark}}
+  {\filleft\Large\chaptertitlename\ \thechapter}
+  {0.6ex}
+  {\titlerule\vspace{1ex}\Huge}
+\titleformat{\section}{\Large\bfseries\color{ForestDark}}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\large\bfseries\color{Forest}}{\thesubsection}{0.7em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{MutedText}Travesía a casa}
+\fancyhead[R]{\small\color{MutedText}Documentación técnica}
+\fancyfoot[L]{\small\color{MutedText}Versión 1.0}
+\fancyfoot[R]{\small\color{MutedText}Página \thepage\ de \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\renewcommand{\headrule}{\hbox to\headwidth{\color{LineGray}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{\color{LineGray}\leaders\hrule height \footrulewidth\hfill}}
+
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \fancyhead[L]{\small\color{MutedText}Travesía a casa}
+  \fancyhead[R]{\small\color{MutedText}Documentación técnica}
+  \fancyfoot[L]{\small\color{MutedText}Versión 1.0}
+  \fancyfoot[R]{\small\color{MutedText}Página \thepage\ de \pageref{LastPage}}
+  \renewcommand{\headrulewidth}{0.4pt}
+  \renewcommand{\footrulewidth}{0.4pt}
+}
+
+\newcommand{\code}[1]{\texttt{\detokenize{#1}}}
+\newcommand{\documentversion}{1.0}
+\newcommand{\documentdate}{14 de agosto de 2026}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+
+\newtcolorbox{infobox}[1]{
+  enhanced,
+  colback=Mist,
+  colframe=Forest,
+  boxrule=0.7pt,
+  arc=1.5mm,
+  title=#1,
+  fonttitle=\bfseries,
+  coltitle=white,
+  colbacktitle=Forest,
+  left=3mm,right=3mm,top=2mm,bottom=2mm
+}
+
+\newtcolorbox{warningbox}[1]{
+  enhanced,
+  colback=AccentOrange!8,
+  colframe=AccentOrange,
+  boxrule=0.7pt,
+  arc=1.5mm,
+  title=#1,
+  fonttitle=\bfseries,
+  coltitle=white,
+  colbacktitle=AccentOrange,
+  left=3mm,right=3mm,top=2mm,bottom=2mm
+}
+
+\newcommand{\MenuImage}[1]{%
+  \IfFileExists{Docs/menu_principal.png}{%
+    \includegraphics[width=#1]{Docs/menu_principal.png}%
+  }{%
+    \IfFileExists{menu_principal.png}{%
+      \includegraphics[width=#1]{menu_principal.png}%
+    }{%
+      \fbox{\parbox[c][5cm][c]{#1}{\centering Imagen de menú pendiente}}%
+    }%
+  }%
+}
+
+\newcommand{\GameCapture}[3]{%
+  \begin{figure}[H]
+    \centering
+    \IfFileExists{Docs/imagenes/#1}{%
+      \includegraphics[width=#2]{Docs/imagenes/#1}%
+    }{%
+      \IfFileExists{imagenes/#1}{%
+        \includegraphics[width=#2]{imagenes/#1}%
+      }{%
+        \begin{tcolorbox}[width=#2,height=5.2cm,valign=center,colback=Mist,colframe=LineGray]
+          \centering
+          \color{MutedText}\Large Captura pendiente\\[0.6em]
+          \normalsize\code{Docs/imagenes/#1}
+        \end{tcolorbox}%
+      }%
+    }%
+    \caption{#3}
+  \end{figure}
+}
+
+\lstdefinestyle{projectcode}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{Mist},
+  frame=single,
+  rulecolor=\color{LineGray},
+  breaklines=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=0.5em,
+  xrightmargin=0.5em
+}
+
+\begin{document}
+\color{BodyText}
+
+% -----------------------------------------------------------------------------
+% Portada
+% -----------------------------------------------------------------------------
+\begin{titlepage}
+  \pagecolor{ForestDark}
+  \color{white}
+
+  \vspace*{0.5cm}
+  {\large PROYECTO DE VIDEOJUEGO EDUCATIVO\par}
+  \vspace{0.4cm}
+  {\color{AccentOrange}\rule{\textwidth}{2.5pt}\par}
+
+  \vspace{1.2cm}
+  {\Huge\bfseries Travesía a casa\par}
+  \vspace{0.35cm}
+  {\LARGE Documentación técnica\par}
+  \vspace{0.35cm}
+  {\large Arquitectura, configuración, operación y mantenimiento\par}
+
+  \vspace{1.1cm}
+  \begin{center}
+    \MenuImage{0.82\textwidth}
+  \end{center}
+
+  \vfill
+  \renewcommand{\arraystretch}{1.35}
+  \begin{tabularx}{\textwidth}{>{\bfseries}L{0.29\textwidth} Y}
+    Preparado por & Brandon Muñoz y Cristhian Montenegro \\
+    Rol & Desarrolladores \\
+    Entidades colaboradoras & Universidad de La Serena (ULS) y LIITEC \\
+    Cliente / Contraparte & Valentina Basulto \\
+    Versión & \documentversion \\
+    Fecha & \documentdate \\
+  \end{tabularx}
+
+  \vspace{0.7cm}
+  {\color{AccentOrange}\rule{\textwidth}{1.5pt}\par}
+\end{titlepage}
+\nopagecolor
+\color{BodyText}
+
+% -----------------------------------------------------------------------------
+% Control documental
+% -----------------------------------------------------------------------------
+\pagenumbering{roman}
+\chapter*{Control documental}
+\addcontentsline{toc}{chapter}{Control documental}
+
+\begin{tabularx}{\textwidth}{L{0.29\textwidth} Y}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Campo} & \color{white}\textbf{Detalle} \\
+  \midrule
+  Código del documento & TFJ-DT-001 \\
+  Título & Documentación técnica de \textit{Travesía a casa} \\
+  Versión & \documentversion \\
+  Estado & Documento técnico inicial; proyecto en desarrollo \\
+  Responsables & Brandon Muñoz y Cristhian Montenegro \\
+  Audiencia & Equipo de desarrollo, colaboradores académicos y contraparte \\
+  Repositorio & \code{travesia-fray-jorge} \\
+  Clasificación & Uso interno y académico \\
+  \bottomrule
+\end{tabularx}
+
+\section*{Historial de versiones}
+\begin{tabularx}{\textwidth}{C{0.14\textwidth} C{0.20\textwidth} Y L{0.25\textwidth}}
+  \toprule
+  \rowcolor{Forest!85}
+  \color{white}\textbf{Versión} & \color{white}\textbf{Fecha} &
+  \color{white}\textbf{Descripción} & \color{white}\textbf{Responsables} \\
+  \midrule
+  1.0 & 14-08-2026 & Emisión inicial de la documentación técnica formal. & Brandon Muñoz y Cristhian Montenegro \\
+  \bottomrule
+\end{tabularx}
+
+\begin{infobox}{Criterio de actualización}
+Este documento debe revisarse cuando cambien la versión de Unity, las escenas incluidas en la compilación, la arquitectura de rooms, el modelo de persistencia o las responsabilidades públicas de los sistemas principales.
+\end{infobox}
+
+\clearpage
+\tableofcontents
+\clearpage
+\listoffigures
+\clearpage
+
+% -----------------------------------------------------------------------------
+% Resumen ejecutivo
+% -----------------------------------------------------------------------------
+\chapter*{Resumen ejecutivo}
+\addcontentsline{toc}{chapter}{Resumen ejecutivo}
+
+\textit{Travesía a casa} es un videojuego educativo 2D desarrollado con Unity 6. El jugador controla a un yal austral que explora zonas inspiradas en el Parque Nacional Bosque Fray Jorge, conversa con personajes y reúne materiales para avanzar en misiones de aprendizaje ambiental.
+
+La solución utiliza una arquitectura orientada a componentes de Unity. La navegación se modela como un grafo de nueve rooms mediante assets \code{RoomNode}; los cambios de zona son coordinados por \code{RoomGraphManager} y cubiertos por \code{ScreenTransition}. El movimiento combina teclado y controles táctiles, mientras que la interfaz, las misiones, la recolección y la accesibilidad se organizan en módulos con responsabilidades diferenciadas.
+
+El estado de preferencias y recolectables utiliza \code{PlayerPrefs}. El inventario, en cambio, mantiene sus cantidades en memoria, lo que constituye la principal brecha técnica actual para implementar continuidad completa entre sesiones. El proyecto tampoco dispone todavía de pruebas automatizadas bajo \code{Assets}; por ello se define en este documento una matriz mínima de validación manual y una estrategia recomendada de automatización.
+
+\begin{infobox}{Lectura recomendada}
+Los capítulos 1 a 3 entregan contexto y arquitectura. Los capítulos 4 a 6 sirven como referencia de implementación y operación. Los capítulos 7 y 8 concentran pruebas, riesgos y mantenimiento. El catálogo completo de scripts se encuentra en el Apéndice A.
+\end{infobox}
+
+\clearpage
+\pagenumbering{arabic}
+
+% -----------------------------------------------------------------------------
+% Capitulo 1
+% -----------------------------------------------------------------------------
+\chapter{Introducción y alcance}
+
+\section{Objetivo del documento}
+
+Establecer una referencia única y verificable para comprender, configurar, extender y mantener el software del proyecto. El documento registra el estado técnico observado en el repositorio y distingue las capacidades vigentes de las recomendaciones futuras.
+
+\section{Alcance funcional documentado}
+
+\begin{itemize}
+  \item Flujo entre menú principal y escena de juego.
+  \item Movimiento del jugador mediante teclado y controles táctiles.
+  \item Navegación por nueve rooms conectadas como grafo.
+  \item Cámara, límites visibles y transiciones visuales.
+  \item Tutorial, diálogos, misiones, inventario y recolectables.
+  \item HUD, audio, brillo, vibración y modo daltónico.
+  \item Persistencia local, recursos, prefabs y utilidades de editor.
+  \item Criterios de pruebas, mantenimiento y evolución técnica.
+\end{itemize}
+
+\section{Elementos fuera de alcance}
+
+No se definen en este documento el guion narrativo completo, el diseño pedagógico detallado, la planificación comercial, la propiedad intelectual de los recursos visuales ni un manual de usuario final. La presentación general del producto se mantiene en \code{README.md}.
+
+\section{Términos de referencia}
+
+En el proyecto se usa el término \textit{room} para una zona jugable visible y conectada a otras zonas. \textit{Runtime} representa el código ejecutado durante la partida y \textit{Editor} identifica las herramientas disponibles únicamente dentro de Unity.
+
+% -----------------------------------------------------------------------------
+% Capitulo 2
+% -----------------------------------------------------------------------------
+\chapter{Contexto y requisitos del sistema}
+
+\section{Contexto del producto}
+
+El proyecto busca apoyar el aprendizaje sobre flora, fauna y conservación del Parque Nacional Bosque Fray Jorge mediante exploración y gamificación. Su público principal corresponde a estudiantes de 1.º a 4.º básico de la Región de Coquimbo.
+
+\begin{figure}[H]
+  \centering
+  \MenuImage{0.92\textwidth}
+  \caption{Menú principal disponible en el repositorio.}
+  \label{fig:menu-principal}
+\end{figure}
+
+\section{Requisitos funcionales observados}
+
+\begin{longtable}{L{0.12\textwidth} L{0.55\textwidth} L{0.18\textwidth}}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{ID} & \color{white}\textbf{Requisito} & \color{white}\textbf{Estado} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{ID} & \color{white}\textbf{Requisito} & \color{white}\textbf{Estado} \\
+  \midrule
+  \endhead
+  RF-01 & Mostrar menú principal y cargar la escena de juego mediante una transición visual. & Implementado \\
+  RF-02 & Permitir movimiento top-down con teclado y D-pad táctil. & Implementado \\
+  RF-03 & Restringir el desplazamiento del jugador a los límites de la room visible. & Implementado \\
+  RF-04 & Permitir viajes únicamente entre rooms conectadas en el grafo. & Implementado \\
+  RF-05 & Ejecutar tutoriales, diálogos y una misión de recolección. & Implementado \\
+  RF-06 & Registrar objetos recolectados y reflejar cantidades en el inventario. & Implementado \\
+  RF-07 & Ofrecer ajustes de volumen, brillo, vibración y modo daltónico. & Implementado \\
+  RF-08 & Conservar preferencias y progreso después de reiniciar la aplicación. & Parcial \\
+  RF-09 & Pausar la partida al abrir el panel de configuración desde el HUD. & Implementado \\
+  RF-10 & Evitar transiciones simultáneas o frames visibles a medio cargar. & Implementado \\
+  \bottomrule
+\end{longtable}
+
+\section{Atributos de calidad}
+
+\begin{tabularx}{\textwidth}{L{0.24\textwidth} Y}
+  \toprule
+  \rowcolor{Forest!85}
+  \color{white}\textbf{Atributo} & \color{white}\textbf{Criterio técnico} \\
+  \midrule
+  Usabilidad & Controles visibles, navegación predecible y pausa accesible desde HUD. \\
+  Compatibilidad & Proyecto fijado a Unity \code{6000.5.1f1} e Input System nuevo. \\
+  Mantenibilidad & Responsabilidades por componente, encabezados de archivo y comentarios XML. \\
+  Fiabilidad & Bloqueo de solicitudes duplicadas durante cambios de escena o room. \\
+  Accesibilidad & Brillo configurable y filtro visual para modo daltónico. \\
+  Rendimiento & Uso de escenas 2D, recursos locales y actualización acotada por componente. \\
+  Trazabilidad & Requisitos y casos de prueba identificados en este documento. \\
+  \bottomrule
+\end{tabularx}
+
+% -----------------------------------------------------------------------------
+% Capitulo 3
+% -----------------------------------------------------------------------------
+\chapter{Arquitectura técnica}
+
+\section{Plataforma y dependencias}
+
+\begin{tabularx}{\textwidth}{L{0.30\textwidth} L{0.22\textwidth} Y}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Tecnología} & \color{white}\textbf{Versión} & \color{white}\textbf{Uso} \\
+  \midrule
+  Unity & 6000.5.1f1 & Motor, editor, escenas y serialización. \\
+  C\# & Provista por Unity & Lógica de runtime y herramientas de editor. \\
+  Input System & 1.19.0 & Teclado y soporte para controles de pantalla. \\
+  Unity UI & 2.5.0 & Menús, HUD, diálogos y paneles. \\
+  Physics 2D & Módulo Unity & Movimiento, colliders y triggers. \\
+  PlayerPrefs & API Unity & Preferencias y marcas simples de recolección. \\
+  Timeline & 1.8.12 & Dependencia disponible para secuencias audiovisuales. \\
+  \bottomrule
+\end{tabularx}
+
+La resolución de referencia es 1920 x 1080. \code{activeInputHandler = 1} confirma el uso exclusivo del Input System nuevo.
+
+\section{Vista por capas}
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    layer/.style={draw=Forest,fill=Mist,rounded corners=2pt,minimum width=0.88\textwidth,minimum height=1.25cm,align=center,font=\small},
+    arrow/.style={-{Latex[length=2.5mm]},thick,draw=Forest}
+  ]
+    \node[layer] (presentation) {\textbf{Presentación}\\MenuPrincipal, HUD, paneles, tutorial, diálogos y filtros visuales};
+    \node[layer,below=6mm of presentation] (application) {\textbf{Aplicación}\\Controladores de menú, jugador, rooms, misiones y transiciones};
+    \node[layer,below=6mm of application] (state) {\textbf{Estado y dominio}\\RoomNode, inventario, recolectables, preferencias y eventos};
+    \node[layer,below=6mm of state] (infrastructure) {\textbf{Infraestructura Unity}\\Escenas, Physics 2D, PlayerPrefs, Resources, prefabs y shaders};
+    \draw[arrow] (presentation) -- (application);
+    \draw[arrow] (application) -- (state);
+    \draw[arrow] (state) -- (infrastructure);
+  \end{tikzpicture}
+  \caption{Organización lógica de responsabilidades.}
+  \label{fig:capas}
+\end{figure}
+
+\section{Vista de componentes en runtime}
+
+\begin{figure}[H]
+  \centering
+  \resizebox{\textwidth}{!}{%
+  \begin{tikzpicture}[
+    component/.style={draw=ForestDark,fill=Mist,rounded corners=2pt,minimum width=3.3cm,minimum height=1.05cm,align=center},
+    service/.style={draw=AccentOrange,fill=AccentOrange!9,rounded corners=2pt,minimum width=3.3cm,minimum height=1.05cm,align=center},
+    flow/.style={-{Latex[length=2.3mm]},thick,draw=ForestDark}
+  ]
+    \node[component] (input) at (0,2.2) {Teclado / HUD};
+    \node[component] (player) at (4.3,2.2) {BirdPlayerController};
+    \node[component] (exit) at (8.6,2.2) {RoomExitPoint};
+    \node[service] (graph) at (12.9,2.2) {RoomGraphManager};
+    \node[component] (node) at (17.2,2.2) {RoomNode};
+
+    \node[component] (pickup) at (0,0) {CollectibleItem\\MaterialPickup};
+    \node[service] (collect) at (4.3,0) {CollectibleManager};
+    \node[service] (inventory) at (8.6,0) {InventoryManager};
+    \node[component] (mission) at (12.9,0) {Sistema de misión};
+
+    \node[component] (settingsui) at (0,-2.2) {SettingsPanelController};
+    \node[service] (settings) at (4.3,-2.2) {SettingsManager};
+    \node[component] (effects) at (8.6,-2.2) {Audio / brillo\\filtro de color};
+    \node[service] (transition) at (12.9,-2.2) {ScreenTransition};
+    \node[component] (scenes) at (17.2,-2.2) {MenuPrincipal\\Juego};
+
+    \draw[flow] (input) -- (player);
+    \draw[flow] (player) -- (exit);
+    \draw[flow] (exit) -- (graph);
+    \draw[flow] (graph) -- (node);
+    \draw[flow] (pickup) -- (collect);
+    \draw[flow] (collect) -- (inventory);
+    \draw[flow] (inventory) -- (mission);
+    \draw[flow] (settingsui) -- (settings);
+    \draw[flow] (settings) -- (effects);
+    \draw[flow] (transition) -- (scenes);
+    \draw[flow] (graph) |- (transition);
+  \end{tikzpicture}}
+  \caption{Relaciones principales entre componentes de runtime.}
+  \label{fig:componentes}
+\end{figure}
+
+\section{Escenas y ciclo de vida}
+
+\begin{tabularx}{\textwidth}{C{0.12\textwidth} L{0.38\textwidth} Y}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Orden} & \color{white}\textbf{Escena} & \color{white}\textbf{Responsabilidad} \\
+  \midrule
+  0 & \path{Assets/Escenas/MenuPrincipal.unity} & Entrada, navegación principal y configuración. \\
+  1 & \path{Assets/Escenas/Juego.unity} & Mundo jugable, rooms, jugador, cámara, HUD y misiones. \\
+  -- & \path{Assets/Escenas/prototipos/} & Referencia histórica; no se incluye en el build activo. \\
+  \bottomrule
+\end{tabularx}
+
+\code{SettingsManager} se crea mediante \code{RuntimeInitializeOnLoadMethod} antes de cargar la primera escena. El objeto sobrevive a cambios de escena y agrega los componentes persistentes de música y filtro de color.
+
+\section{Secuencia de inicio}
+
+\begin{enumerate}
+  \item Unity inicializa \code{SettingsManager}, \code{BackgroundMusicPlayer} y \code{ColorblindFilter}.
+  \item La escena \code{MenuPrincipal} presenta las acciones de jugar y configuración.
+  \item \code{MainMenuController} solicita a \code{ScreenTransition} cargar \code{Juego} de forma asíncrona.
+  \item \code{RoomGraphManager} fija el nodo inicial, mueve al jugador y emite \code{NodeChanged}.
+  \item Cámara, límites y UI sincronizan su estado con la room activa.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+% Capitulo 4
+% -----------------------------------------------------------------------------
+\chapter{Diseño detallado de los sistemas}
+
+\section{Navegación por grafo}
+
+Cada room jugable se representa mediante un \code{ScriptableObject RoomNode}. Sus datos principales son \code{roomId}, \code{testWorldPosition} y \code{connections}. El grafo vigente contiene nueve nodos.
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[
+    room/.style={circle,draw=ForestDark,fill=Leaf!20,minimum size=10mm,font=\bfseries},
+    route/.style={line width=1.2pt,draw=Forest}
+  ]
+    \node[room] (r2) at (0,3) {2};
+    \node[room] (r1) at (-2.1,3) {1};
+    \node[room] (r3) at (2.1,3) {3};
+    \node[room] (r5) at (0,1.5) {5};
+    \node[room] (r6) at (-2.1,1.5) {6};
+    \node[room] (r4) at (0,0) {4};
+    \node[room] (r7) at (0,-1.5) {7};
+    \node[room] (r8) at (2.1,-1.5) {8};
+    \node[room] (r9) at (4.2,-1.5) {9};
+    \draw[route] (r1)--(r2)--(r3);
+    \draw[route] (r2)--(r5);
+    \draw[route] (r6)--(r5)--(r4)--(r7)--(r8)--(r9);
+  \end{tikzpicture}
+  \caption{Topología lógica actual de las nueve rooms.}
+  \label{fig:grafo-rooms}
+\end{figure}
+
+\subsection{Transición entre rooms}
+
+\begin{enumerate}
+  \item \code{RoomExitPoint} detecta al jugador y verifica que avance hacia la salida.
+  \item Se espera hasta que el collider alcance el borde visible de la cámara.
+  \item \code{RoomGraphManager.TravelTo} valida la conexión y bloquea nuevas solicitudes.
+  \item \code{ScreenTransition} cubre la pantalla con un fundido.
+  \item Se sincronizan nodo, cámara, posición y velocidad del \code{Rigidbody2D}.
+  \item Se arma la salida recíproca y se emite \code{NodeChanged}.
+  \item El fundido de entrada devuelve el control al jugador.
+\end{enumerate}
+
+\begin{infobox}{Invariante de navegación}
+Un viaje solo es válido cuando el destino es distinto del nodo actual, no existe otra transición en curso y el destino está presente en \code{CurrentNode.connections}. Las conexiones deben registrarse en ambos sentidos desde el Inspector.
+\end{infobox}
+
+\section{Jugador, cámara y límites}
+
+\code{BirdPlayerController} combina la entrada de \code{Keyboard.current} con el vector acumulado por los botones \code{HudMoveButton}. El movimiento se aplica como velocidad normalizada sobre un \code{Rigidbody2D}, sin gravedad y con interpolación.
+
+Durante un cambio de room se desactiva el movimiento y se limpia la entrada táctil. El número de revisión \code{HudInputRevision} evita que eventos \code{PointerUp} tardíos modifiquen una entrada que ya fue cancelada.
+
+\code{CameraRoomFollower} centra la cámara y adapta su tamaño ortográfico al fondo visible. \code{PlayerRoomBounds} calcula el área disponible y restringe la posición física para impedir que el personaje abandone el encuadre.
+
+\section{Interfaz y controles}
+
+\code{GameHudController} concentra el D-pad, acciones de interacción y picoteo, silencio, configuración y visibilidad de controles durante diálogos. Las acciones específicas se conectan mediante \code{UnityEvent}, manteniendo desacoplada la interfaz de la lógica particular de cada room.
+
+Al abrir configuración desde la partida, \code{Time.timeScale} cambia a cero. Al cerrar el panel o abandonar la escena se restablece a uno.
+
+\section{Misiones, inventario y recolección}
+
+El flujo de recolección utiliza tres identificadores relacionados:
+
+\begin{tabularx}{\textwidth}{L{0.25\textwidth} Y L{0.28\textwidth}}
+  \toprule
+  \rowcolor{Forest!85}
+  \color{white}\textbf{Dato} & \color{white}\textbf{Propósito} & \color{white}\textbf{Ejemplo} \\
+  \midrule
+  \code{roomId} & Identifica la zona donde se encuentra el objeto. & \code{A1} \\
+  \code{itemId} & Distingue el objeto dentro de una room. & \code{flor_nectar_01} \\
+  \code{inventoryKey} & Agrupa objetos equivalentes para inventario y misión. & \code{flor_nectar} \\
+  \bottomrule
+\end{tabularx}
+
+\code{CollectibleManager} forma un ID con \code{roomId + itemId}, evita duplicados y notifica a \code{InventoryManager}. Las misiones consultan cantidades por \code{inventoryKey}; por ello la misma clave debe utilizarse en pickups y requisitos.
+
+\section{Configuración y accesibilidad}
+
+\code{SettingsManager} es el origen único de preferencias. Cada modificación emite \code{Changed}, lo que permite actualizar música, brillo y filtro de color sin sondeo permanente.
+
+\code{SettingsPanelController} conecta sliders y toggles con el estado. \code{BrightnessOverlay} modifica una capa visual y \code{ColorblindFilter} asegura el efecto requerido al cargar escenas. La vibración se registra como preferencia, aunque su aplicación concreta debe conectarse en los puntos de interacción que la requieran.
+
+\section{Herramientas de editor y código legado}
+
+\code{AssetOrganizerTools} automatiza organización de assets, prefabs de decoración y jerarquía. \code{MissionStatusTools} configura el popup de misión en la escena activa. Ambos archivos están bajo \path{Assets/Editor/} y no forman parte del runtime.
+
+El conjunto \code{RoomData}, \code{RoomManager}, \code{RoomEdgeTrigger}, \code{CubePlayerController} y \code{Direction} pertenece al prototipo cardinal anterior. Se conserva como referencia, pero no debe mezclarse con el flujo principal basado en \code{RoomNode}.
+
+% -----------------------------------------------------------------------------
+% Capitulo 5
+% -----------------------------------------------------------------------------
+\chapter{Datos y persistencia}
+
+\section{Propietarios del estado}
+
+\begin{tabularx}{\textwidth}{L{0.28\textwidth} L{0.25\textwidth} Y}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Estado} & \color{white}\textbf{Responsable} & \color{white}\textbf{Duración} \\
+  \midrule
+  Preferencias & \code{SettingsManager} & Persistente entre escenas y sesiones mediante \code{PlayerPrefs}. \\
+  Room actual & \code{RoomGraphManager} & Mientras la escena de juego permanece cargada. \\
+  IDs recolectados & \code{CollectibleManager} & Memoria y respaldo individual en \code{PlayerPrefs}. \\
+  Conteos de inventario & \code{InventoryManager} & Solo durante la instancia actual de la partida. \\
+  Estado visual de misión & Componentes de misión & Asociado a objetos de la escena de juego. \\
+  \bottomrule
+\end{tabularx}
+
+\section{Claves de PlayerPrefs}
+
+\begin{longtable}{L{0.40\textwidth} L{0.18\textwidth} L{0.18\textwidth}}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Clave} & \color{white}\textbf{Tipo} & \color{white}\textbf{Inicial} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Clave} & \color{white}\textbf{Tipo} & \color{white}\textbf{Inicial} \\
+  \midrule
+  \endhead
+  \code{settings_vol_ambiente} & \code{float} & 1 \\
+  \code{settings_vol_personajes} & \code{float} & 1 \\
+  \code{settings_vol_cinematica} & \code{float} & 1 \\
+  \code{settings_brillo} & \code{float} & 1 \\
+  \code{settings_modo_daltonico} & \code{int} booleano & 0 \\
+  \code{settings_vibracion} & \code{int} booleano & 0 \\
+  \code{collected_<roomId>_<itemId>} & \code{int} booleano & 0 \\
+  \bottomrule
+\end{longtable}
+
+\begin{warningbox}{Brecha de consistencia identificada}
+Después de reiniciar la aplicación, un recolectable puede continuar marcado como obtenido mientras el conteo de inventario vuelve a cero. Antes de ampliar las misiones o distribuir una versión final, se recomienda reemplazar la persistencia fragmentada por un modelo de guardado versionado que almacene inventario, misión y recolectables de forma atómica.
+\end{warningbox}
+
+\section{Evolución recomendada del guardado}
+
+Un futuro \code{SaveData} debería incluir versión de esquema, configuración, room actual, inventario, IDs recolectados y progreso de misión. La escritura puede realizarse en JSON local con archivo temporal y reemplazo atómico. \code{PlayerPrefs} puede mantenerse únicamente para preferencias de bajo riesgo.
+
+% -----------------------------------------------------------------------------
+% Capitulo 6
+% -----------------------------------------------------------------------------
+\chapter{Configuración, construcción y operación}
+
+\section{Estructura relevante del repositorio}
+
+\begin{lstlisting}[style=projectcode]
+Assets/
+|-- Arte/                  Sprites, fondos y elementos de interfaz
+|-- Editor/                Herramientas exclusivas del editor
+|-- Escenas/               MenuPrincipal, Juego y prototipos
+|-- Prefabs/               UI y decoracion reutilizable
+|-- Resources/             Audio, animaciones y recursos runtime
+|-- Rooms/Bird/            RoomNode_1 a RoomNode_9
+|-- Scripts/Menu/          Menu, preferencias y accesibilidad
+|-- Scripts/Rooms/         Gameplay, rooms, HUD y misiones
+`-- Shaders/               Filtros visuales
+\end{lstlisting}
+
+\section{Preparación del entorno}
+
+\begin{enumerate}
+  \item Instalar Unity \code{6000.5.1f1} desde Unity Hub.
+  \item Agregar el módulo de compilación correspondiente a la plataforma de destino.
+  \item Abrir la carpeta raíz del repositorio como proyecto existente.
+  \item Esperar la importación de paquetes y confirmar que la consola no muestre errores.
+  \item Abrir \path{Assets/Escenas/MenuPrincipal.unity} y ejecutar en modo Play.
+\end{enumerate}
+
+\section{Referencias críticas del Inspector}
+
+\begin{tabularx}{\textwidth}{L{0.31\textwidth} Y}
+  \toprule
+  \rowcolor{Forest!85}
+  \color{white}\textbf{Objeto o componente} & \color{white}\textbf{Configuración requerida} \\
+  \midrule
+  \code{RoomGraphManager} & \code{startingNode}, jugador y parámetros de transición. \\
+  \code{RoomNode} & ID, posición y conexiones bidireccionales. \\
+  \code{RoomExitPoint} & \code{targetNode} y, si aplica, \code{entryPoint}. \\
+  \code{GameHudController} & Panel de configuración, sprites y eventos de interacción. \\
+  Recolectables & \code{roomId}, \code{itemId} e \code{inventoryKey}. \\
+  \code{MissionStatusPopup} & Claves y cantidades requeridas por la misión. \\
+  Build Settings & \code{MenuPrincipal} en orden 0 y \code{Juego} en orden 1. \\
+  \bottomrule
+\end{tabularx}
+
+\section{Recursos cargados en runtime}
+
+\begin{itemize}
+  \item Música: \path{Assets/Resources/Audio/TheMountainKid.mp3}.
+  \item Animación auxiliar: \path{Assets/Resources/Animations/AveNegraWalk-generated.png}.
+  \item UI reutilizable: \path{Assets/Prefabs/UI/MainMenuContent.prefab} y \path{Assets/Prefabs/UI/GameHUD.prefab}.
+  \item Filtros: \path{Assets/Shaders/ColorblindFilter.shader} y \path{Assets/Shaders/UIColorblindOverlay.shader}.
+\end{itemize}
+
+\section{Construcción}
+
+Antes de generar un build se debe confirmar la plataforma, orientación, identificador de aplicación, iconos y firma. Estos valores dependen del canal de distribución y no se fijan en esta documentación.
+
+Procedimiento general:
+
+\begin{enumerate}
+  \item Abrir \textbf{File > Build Profiles} en Unity.
+  \item Seleccionar la plataforma y validar que las dos escenas activas estén incluidas.
+  \item Ejecutar una prueba de Play completa desde \code{MenuPrincipal}.
+  \item Generar el build en una carpeta ignorada por Git, como \code{Builds/}.
+  \item Registrar versión, plataforma y resultado de la matriz de pruebas.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+% Capitulo 7
+% -----------------------------------------------------------------------------
+\chapter{Estrategia de pruebas y aceptación}
+
+\section{Estado actual}
+
+El paquete Unity Test Framework está disponible, pero no se encontraron pruebas automatizadas bajo \code{Assets}. La validación vigente depende del modo Play y de inspección manual de consola, escenas y persistencia.
+
+\section{Matriz mínima de pruebas}
+
+\begin{longtable}{L{0.11\textwidth} L{0.34\textwidth} L{0.40\textwidth}}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{ID} & \color{white}\textbf{Acción} & \color{white}\textbf{Resultado esperado} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{ID} & \color{white}\textbf{Acción} & \color{white}\textbf{Resultado esperado} \\
+  \midrule
+  \endhead
+  CT-01 & Abrir \code{MenuPrincipal} e iniciar juego. & La escena \code{Juego} carga con fundido y sin errores. \\
+  CT-02 & Mover con WASD y flechas. & El ave se desplaza y anima en la dirección correcta. \\
+  CT-03 & Mantener y soltar cada botón del D-pad. & El movimiento comienza y se detiene sin quedar bloqueado. \\
+  CT-04 & Cruzar una salida válida y regresar. & La room cambia en ambos sentidos y conserva el eje transversal. \\
+  CT-05 & Intentar activar salidas durante un fundido. & No se inicia una segunda transición. \\
+  CT-06 & Recoger un objeto y volver a la room. & El objeto no reaparece y el inventario aumenta una vez. \\
+  CT-07 & Abrir y cerrar un diálogo. & HUD y control recuperan su estado correctamente. \\
+  CT-08 & Abrir configuración desde el HUD. & La partida se pausa y continúa al cerrar. \\
+  CT-09 & Cambiar audio, brillo y modo daltónico. & Los efectos se actualizan y sobreviven al cambio de escena. \\
+  CT-10 & Reiniciar tras recolectar materiales. & Se documenta la consistencia entre marcas e inventario. \\
+  CT-11 & Regresar al menú desde el HUD. & \code{Time.timeScale} queda en 1 y el menú carga correctamente. \\
+  CT-12 & Revisar consola durante el recorrido completo. & No existen excepciones ni referencias faltantes. \\
+  \bottomrule
+\end{longtable}
+
+\section{Automatización recomendada}
+
+\begin{itemize}
+  \item \textbf{EditMode:} validar IDs únicos, conexiones bidireccionales y referencias nulas en \code{RoomNode}.
+  \item \textbf{EditMode:} comprobar construcción de claves de recolectables y valores iniciales de configuración.
+  \item \textbf{PlayMode:} probar bloqueo de movimiento y recuperación después de una transición.
+  \item \textbf{PlayMode:} verificar recolección única, eventos de inventario y pausa del HUD.
+  \item \textbf{Integración:} cargar ambas escenas incluidas en Build Settings y revisar errores de consola.
+\end{itemize}
+
+\section{Criterio de aceptación técnica}
+
+Una versión se considera candidata cuando supera CT-01 a CT-12 en la plataforma objetivo, no genera excepciones en consola y mantiene estables las referencias serializadas del Inspector.
+
+% -----------------------------------------------------------------------------
+% Capitulo 8
+% -----------------------------------------------------------------------------
+\chapter{Mantenimiento, riesgos y evolución}
+
+\section{Convenciones de documentación}
+
+\begin{itemize}
+  \item El bloque inicial \code{/** ... */} describe propósito y responsabilidades del archivo completo.
+  \item \code{/// <summary>} documenta clases, propiedades, eventos y métodos que requieren contexto o aparecen en IntelliSense.
+  \item Los comentarios deben explicar decisiones, contratos o restricciones; no deben repetir literalmente el código.
+  \item Los cambios de arquitectura deben reflejarse aquí y en el resumen Markdown cuando afecten la operación cotidiana.
+\end{itemize}
+
+\section{Registro de riesgos técnicos}
+
+\begin{longtable}{L{0.10\textwidth} L{0.30\textwidth} C{0.13\textwidth} L{0.32\textwidth}}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{ID} & \color{white}\textbf{Riesgo} & \color{white}\textbf{Nivel} & \color{white}\textbf{Tratamiento recomendado} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{ID} & \color{white}\textbf{Riesgo} & \color{white}\textbf{Nivel} & \color{white}\textbf{Tratamiento recomendado} \\
+  \midrule
+  \endhead
+  RT-01 & Inventario y recolectables usan persistencias diferentes. & Alto & Crear un guardado unificado y versionado. \\
+  RT-02 & Ausencia de pruebas automatizadas. & Alto & Incorporar suites EditMode y PlayMode prioritarias. \\
+  RT-03 & Código legado comparte carpeta con runtime vigente. & Medio & Mover a un módulo \code{Legacy} o retirarlo tras validación. \\
+  RT-04 & Nombres de escenas y recursos se resuelven mediante cadenas. & Medio & Centralizar constantes o referencias serializadas. \\
+  RT-05 & Diversas referencias dependen del Inspector. & Medio & Añadir validadores de editor y pruebas de escenas. \\
+  RT-06 & La vibración se almacena, pero requiere integración por acción. & Bajo & Definir una interfaz de feedback háptico por plataforma. \\
+  \bottomrule
+\end{longtable}
+
+\section{Procedimiento de cambio seguro}
+
+\begin{enumerate}
+  \item Identificar el sistema propietario del comportamiento y revisar sus dependencias.
+  \item Modificar únicamente los componentes involucrados y actualizar sus encabezados si cambia su responsabilidad.
+  \item Validar referencias serializadas en ambas escenas activas.
+  \item Ejecutar los casos de prueba afectados y el recorrido mínimo CT-01, CT-04, CT-08 y CT-12.
+  \item Actualizar documentación, versión y registro de riesgos cuando corresponda.
+\end{enumerate}
+
+\section{Línea de evolución recomendada}
+
+\begin{enumerate}
+  \item Unificar persistencia de inventario, recolectables y misiones.
+  \item Separar assemblies de runtime, editor, pruebas y legado mediante \code{asmdef}.
+  \item Automatizar validación del grafo y referencias de escena.
+  \item Incorporar pruebas de integración para transiciones y controles táctiles.
+  \item Centralizar identificadores de escenas, recursos e inventario.
+  \item Evaluar localización de textos y perfiles adicionales de accesibilidad.
+\end{enumerate}
+
+% -----------------------------------------------------------------------------
+% Capitulo 9
+% -----------------------------------------------------------------------------
+\chapter{Conclusiones}
+
+La base actual separa adecuadamente navegación, movimiento, interfaz, misiones y configuración dentro del modelo de componentes de Unity. El grafo de \code{RoomNode} permite representar rutas no cardinales y el servicio global de transición protege cambios de escena y room frente a solicitudes simultáneas.
+
+Las prioridades técnicas antes de una entrega de mayor alcance son consolidar la persistencia, aislar el código legado y establecer pruebas automatizadas. Estas mejoras reducen el riesgo de regresiones sin requerir reemplazar la arquitectura principal.
+
+La documentación a nivel de archivo, la referencia técnica Markdown y este documento formal cumplen funciones distintas: contexto inmediato en código, consulta rápida para el equipo y trazabilidad completa para colaboradores y contraparte.
+
+% -----------------------------------------------------------------------------
+% Apendices
+% -----------------------------------------------------------------------------
+\appendix
+\chapter{Catálogo de scripts}
+
+\small
+\begin{longtable}{L{0.31\textwidth} L{0.17\textwidth} L{0.43\textwidth}}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Archivo} & \color{white}\textbf{Módulo} & \color{white}\textbf{Responsabilidad principal} \\
+  \midrule
+  \endfirsthead
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Archivo} & \color{white}\textbf{Módulo} & \color{white}\textbf{Responsabilidad principal} \\
+  \midrule
+  \endhead
+  \code{ScreenTransition.cs} & Transversal & Fundidos y cargas de escena sin solicitudes simultáneas. \\
+  \code{BackgroundMusicPlayer.cs} & Menú & Música persistente y volumen de ambiente. \\
+  \code{BrightnessOverlay.cs} & Menú & Representación visual del brillo configurado. \\
+  \code{ColorblindFilter.cs} & Menú & Filtro visual de accesibilidad entre escenas. \\
+  \code{MainMenuController.cs} & Menú & Acciones de jugar y configuración. \\
+  \code{SettingsManager.cs} & Menú & Preferencias globales y persistentes. \\
+  \code{SettingsPanelController.cs} & Menú & Enlace entre controles visuales y preferencias. \\
+  \code{BirdPlayerController.cs} & Gameplay & Movimiento del ave con teclado y HUD. \\
+  \code{BirdSpriteAnimator.cs} & Gameplay & Animación del ave según estado y dirección. \\
+  \code{CameraRoomFollower.cs} & Rooms & Encuadre de cámara para la room actual. \\
+  \code{CollectibleItem.cs} & Recolección & Comportamiento de un objeto recolectable. \\
+  \code{CollectibleManager.cs} & Recolección & Registro único y persistente de objetos. \\
+  \code{GameHudController.cs} & Interfaz & Controles, pausa, silencio y acciones del HUD. \\
+  \code{HudMoveButton.cs} & Interfaz & Traducción de eventos táctiles a movimiento. \\
+  \code{IntroTutorialController.cs} & Tutorial & Secuencia de introducción para el jugador. \\
+  \code{InventoryManager.cs} & Inventario & Conteos de materiales durante la partida. \\
+  \code{InvisibleWall2D.cs} & Rooms & Límites invisibles y guías de editor. \\
+  \code{MaterialPickup.cs} & Misión & Recolección de materiales y mensaje visual. \\
+  \code{MissionBird.cs} & Misión & Diálogos y estado del ave de misión. \\
+  \code{MissionIntroCutscene.cs} & Misión & Introducción narrativa y avance inicial. \\
+  \code{MissionStatusPopup.cs} & Misión & Visualización del progreso requerido. \\
+  \code{PlayerRoomBounds.cs} & Rooms & Restricción del jugador al área visible. \\
+  \code{RoomBackgroundLocator.cs} & Rooms & Localización y caché de fondos cercanos. \\
+  \code{RoomExitPoint.cs} & Rooms & Salidas, llegadas y prevención de reentradas. \\
+  \code{RoomGraphManager.cs} & Rooms & Estado y viajes por el grafo de rooms. \\
+  \code{RoomNode.cs} & Rooms & Datos y conexiones de una room. \\
+  \code{RoomTransitionUI.cs} & Rooms & Actualización de UI al cambiar de room. \\
+  \code{CubePlayerController.cs} & Legado & Movimiento simple del prototipo. \\
+  \code{Direction.cs} & Legado & Direcciones cardinales y dirección opuesta. \\
+  \code{RoomData.cs} & Legado & Datos de rooms basados en vecinos cardinales. \\
+  \code{RoomEdgeTrigger.cs} & Legado & Detección de bordes para \code{RoomManager}. \\
+  \code{RoomManager.cs} & Legado & Carga de prefabs y transición cardinal. \\
+  \code{AssetOrganizerTools.cs} & Editor & Organización de assets, prefabs y jerarquía. \\
+  \code{MissionStatusTools.cs} & Editor & Configuración del popup de misión. \\
+  \bottomrule
+\end{longtable}
+\normalsize
+
+\chapter{Registro visual}
+
+Las siguientes figuras se completan automáticamente cuando se agregan los archivos indicados en \path{Docs/imagenes/}. No es necesario modificar el código LaTeX.
+
+\GameCapture{exploracion.png}{0.90\textwidth}{Exploración de una room del Parque Nacional Bosque Fray Jorge.}
+\GameCapture{mision.png}{0.90\textwidth}{Interfaz y progreso de una misión.}
+\GameCapture{dialogo.png}{0.90\textwidth}{Conversación con un personaje del juego.}
+\GameCapture{configuracion.png}{0.90\textwidth}{Panel de configuración y opciones de accesibilidad.}
+
+\chapter{Glosario}
+
+\begin{tabularx}{\textwidth}{L{0.25\textwidth} Y}
+  \toprule
+  \rowcolor{ForestDark}
+  \color{white}\textbf{Término} & \color{white}\textbf{Definición} \\
+  \midrule
+  Build & Versión ejecutable generada para una plataforma objetivo. \\
+  D-pad & Control direccional en pantalla utilizado para movimiento táctil. \\
+  HUD & Interfaz visible durante la partida. \\
+  PlayerPrefs & Almacenamiento local simple provisto por Unity. \\
+  Room & Zona jugable representada por un nodo del grafo. \\
+  Runtime & Código y objetos activos durante la ejecución del juego. \\
+  ScriptableObject & Asset serializable de Unity usado para datos independientes de escenas. \\
+  Singleton & Patrón utilizado para exponer una única instancia coordinadora. \\
+  Trigger & Collider que detecta entradas y salidas sin bloquear físicamente. \\
+  UnityEvent & Evento serializable conectable desde el Inspector. \\
+  \bottomrule
+\end{tabularx}
+
+\vfill
+\begin{center}
+  \color{MutedText}
+  \rule{0.45\textwidth}{0.4pt}\\
+  Fin del documento -- TFJ-DT-001 -- Versión \documentversion
+\end{center}
+
+\end{document}

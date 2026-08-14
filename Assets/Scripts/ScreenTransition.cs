@@ -1,3 +1,9 @@
+/**
+ * Archivo: ScreenTransition.cs
+ * Proposito: Centralizar las transiciones visuales entre pantallas y escenas.
+ * Responsabilidades: Crear el overlay de fundido, ejecutar fades, cargar escenas y evitar transiciones simultaneas.
+ *
+ */
 using System;
 using System.Collections;
 using UnityEngine;

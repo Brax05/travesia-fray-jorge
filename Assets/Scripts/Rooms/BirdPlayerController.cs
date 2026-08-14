@@ -1,3 +1,9 @@
+/**
+ * Archivo: BirdPlayerController.cs
+ * Proposito: Controlar el movimiento del ave jugable en las salas.
+ * Responsabilidades: Leer input de teclado y HUD, mover el Rigidbody2D, bloquear controles cuando corresponde y coordinar la direccion usada por animaciones.
+ *
+ */
 using UnityEngine;
 using UnityEngine.InputSystem;
 

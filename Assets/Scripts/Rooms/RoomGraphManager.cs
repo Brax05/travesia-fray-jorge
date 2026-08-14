@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomGraphManager.cs
+ * Proposito: Administrar la navegacion por grafo entre RoomNode del juego.
+ * Responsabilidades: Validar conexiones, ejecutar cambios de sala, mover al jugador, actualizar camara y bloquear control durante transiciones.
+ *
+ */
 using System;
 using UnityEngine;
 

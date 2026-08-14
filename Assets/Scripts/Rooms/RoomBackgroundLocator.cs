@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomBackgroundLocator.cs
+ * Proposito: Localizar fondos de salas cercanos a una posicion del mundo.
+ * Responsabilidades: Cachear SpriteRenderers, buscar fondos por nombre y devolver el fondo mas cercano para encuadre y limites.
+ *
+ */
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;

@@ -1,3 +1,9 @@
+/**
+ * Archivo: MissionStatusTools.cs
+ * Proposito: Crear y configurar desde el editor el popup de estado de mision.
+ * Responsabilidades: Buscar el HUD de juego, agregar MissionStatusPopup y guardar los cambios necesarios en la escena activa.
+ *
+ */
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;

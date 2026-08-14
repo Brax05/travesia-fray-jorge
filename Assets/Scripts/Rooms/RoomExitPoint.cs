@@ -1,3 +1,9 @@
+/**
+ * Archivo: RoomExitPoint.cs
+ * Proposito: Controlar puntos de salida y entrada entre salas conectadas.
+ * Responsabilidades: Activar viajes desde triggers, evitar reentradas accidentales, calcular posiciones visibles de llegada y coordinarse con RoomGraphManager.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

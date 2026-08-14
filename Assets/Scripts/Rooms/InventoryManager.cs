@@ -1,3 +1,9 @@
+/**
+ * Archivo: InventoryManager.cs
+ * Proposito: Administrar el inventario acumulado por el jugador.
+ * Responsabilidades: Guardar cantidades por item, sumar materiales recolectados y permitir consultas de disponibilidad para misiones.
+ *
+ */
 using System;
 using System.Collections.Generic;
 using UnityEngine;

@@ -1,3 +1,9 @@
+/**
+ * Archivo: AssetOrganizerTools.cs
+ * Proposito: Automatizar tareas de organizacion visual y estructura de assets desde el editor de Unity.
+ * Responsabilidades: Ajustar ordenes de renderizado, generar prefabs de decoracion, ordenar jerarquia de escena y crear carpetas base del proyecto.
+ *
+ */
 using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;

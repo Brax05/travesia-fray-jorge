@@ -1,3 +1,9 @@
+/**
+ * Archivo: CollectibleManager.cs
+ * Proposito: Registrar el estado de objetos recolectados durante la partida.
+ * Responsabilidades: Mantener una instancia global, evitar recolecciones duplicadas y enviar items al InventoryManager.
+ *
+ */
 using System.Collections.Generic;
 using UnityEngine;
 

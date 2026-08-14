@@ -1,3 +1,9 @@
+/**
+ * Archivo: MissionStatusPopup.cs
+ * Proposito: Mostrar el progreso de materiales requeridos por la mision.
+ * Responsabilidades: Construir la interfaz del popup, leer inventario, actualizar estados visuales y enlazar el boton del letrero de mision.
+ *
+ */
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;

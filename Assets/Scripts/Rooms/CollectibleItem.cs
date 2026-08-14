@@ -1,3 +1,9 @@
+/**
+ * Archivo: CollectibleItem.cs
+ * Proposito: Representar un objeto recolectable dentro de una sala.
+ * Responsabilidades: Consultar si ya fue recogido, registrar la recoleccion y ocultar el objeto cuando entra al inventario.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

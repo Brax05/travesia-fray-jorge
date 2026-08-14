@@ -1,3 +1,9 @@
+/**
+ * Archivo: MissionIntroCutscene.cs
+ * Proposito: Coordinar la introduccion narrativa y el avance inicial de la mision.
+ * Responsabilidades: Secuenciar dialogos, controlar HUD y jugador, registrar materiales recolectados y actualizar el estado de la mision.
+ *
+ */
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;

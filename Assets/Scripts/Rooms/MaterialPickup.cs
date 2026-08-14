@@ -1,3 +1,9 @@
+/**
+ * Archivo: MaterialPickup.cs
+ * Proposito: Manejar la recoleccion de materiales necesarios para la mision.
+ * Responsabilidades: Detectar al jugador, sumar el material al inventario, notificar a la cinematica de mision y mostrar mensajes breves en pantalla.
+ *
+ */
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;

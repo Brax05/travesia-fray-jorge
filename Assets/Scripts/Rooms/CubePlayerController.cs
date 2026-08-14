@@ -1,3 +1,9 @@
+/**
+ * Archivo: CubePlayerController.cs
+ * Proposito: Proveer un controlador simple de movimiento para prototipos.
+ * Responsabilidades: Leer input basico, mover el Rigidbody2D y exponer entrada manual desde otros componentes.
+ *
+ */
 using UnityEngine;
 
 namespace TravesiaACasa.Rooms

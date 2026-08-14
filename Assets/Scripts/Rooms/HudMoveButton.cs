@@ -1,3 +1,9 @@
+/**
+ * Archivo: HudMoveButton.cs
+ * Proposito: Traducir los botones tactiles del HUD en direccion de movimiento.
+ * Responsabilidades: Detectar presion, salida y liberacion del puntero, enviar input al BirdPlayerController y cancelar entradas al desactivarse.
+ *
+ */
 using UnityEngine;
 using UnityEngine.EventSystems;
 
